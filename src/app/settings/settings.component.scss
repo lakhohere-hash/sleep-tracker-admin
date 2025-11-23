@@ -1,0 +1,354 @@
+// LEGENDARY SETTINGS STYLES
+.legendary-settings {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  color: #f8fafc;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  padding: 2rem;
+
+  .settings-header {
+    margin-bottom: 3rem;
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 2rem;
+
+      .title-section {
+        .page-title {
+          font-size: 2.5rem;
+          font-weight: 900;
+          margin: 0;
+          background: linear-gradient(135deg, #60a5fa, #a78bfa);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+
+          .title-icon {
+            font-size: 3rem;
+          }
+
+          .power-badge {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            text-transform: uppercase;
+          }
+        }
+
+        .page-subtitle {
+          color: #94a3b8;
+          margin: 0.5rem 0 0 0;
+          font-size: 1.1rem;
+        }
+      }
+
+      .header-actions {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+
+        .action-btn {
+          padding: 1rem 1.5rem;
+          border: none;
+          border-radius: 12px;
+          font-weight: 700;
+          cursor: pointer;
+          transition: all 0.3s ease;
+
+          &.save-btn {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+
+            &:hover {
+              transform: translateY(-2px);
+            }
+          }
+
+          &.export-btn {
+            background: rgba(96, 165, 250, 0.2);
+            color: #60a5fa;
+            border: 1px solid rgba(96, 165, 250, 0.3);
+
+            &:hover {
+              background: rgba(96, 165, 250, 0.3);
+            }
+          }
+
+          &.god-mode-btn {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+
+            &:hover {
+              transform: translateY(-2px);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .settings-nav {
+    margin-bottom: 2rem;
+
+    .nav-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+
+      .nav-item {
+        background: rgba(30, 41, 59, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 15px;
+        padding: 1.5rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: center;
+
+        &:hover {
+          transform: translateY(-3px);
+          border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        &.active {
+          border-color: rgba(96, 165, 250, 0.5);
+          background: rgba(96, 165, 250, 0.1);
+        }
+
+        .nav-icon {
+          font-size: 2rem;
+          display: block;
+          margin-bottom: 0.5rem;
+        }
+
+        .nav-title {
+          font-size: 1rem;
+          font-weight: 700;
+          color: #f1f5f9;
+          display: block;
+          margin-bottom: 0.25rem;
+        }
+
+        .nav-description {
+          font-size: 0.8rem;
+          color: #94a3b8;
+        }
+      }
+    }
+  }
+
+  .settings-content {
+    .settings-section {
+      background: rgba(30, 41, 59, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+
+      .section-header {
+        margin-bottom: 2rem;
+
+        h2 {
+          font-size: 1.8rem;
+          font-weight: 800;
+          color: #f1f5f9;
+          margin: 0 0 0.5rem 0;
+        }
+
+        p {
+          color: #94a3b8;
+          margin: 0;
+        }
+      }
+
+      .settings-grid {
+        display: grid;
+        gap: 2rem;
+
+        .setting-group {
+          h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #f1f5f9;
+            margin: 0 0 1rem 0;
+          }
+
+          .setting-item {
+            margin-bottom: 1rem;
+
+            label {
+              display: block;
+              margin-bottom: 0.5rem;
+              font-weight: 600;
+              color: #f1f5f9;
+            }
+
+            .setting-input {
+              width: 100%;
+              padding: 0.75rem 1rem;
+              background: rgba(15, 23, 42, 0.8);
+              border: 1px solid rgba(255, 255, 255, 0.1);
+              border-radius: 8px;
+              color: #f8fafc;
+
+              &:focus {
+                outline: none;
+                border-color: #60a5fa;
+              }
+            }
+
+            &.toggle-item {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              padding: 1rem;
+              background: rgba(15, 23, 42, 0.4);
+              border-radius: 8px;
+
+              .toggle-content {
+                .toggle-label {
+                  font-weight: 600;
+                  color: #f1f5f9;
+                  display: block;
+                }
+
+                .toggle-description {
+                  font-size: 0.8rem;
+                  color: #94a3b8;
+                }
+              }
+
+              .toggle-switch {
+                position: relative;
+                display: inline-block;
+                width: 50px;
+                height: 24px;
+
+                input {
+                  opacity: 0;
+                  width: 0;
+                  height: 0;
+
+                  &:checked + .slider {
+                    background: #10b981;
+                  }
+
+                  &:checked + .slider:before {
+                    transform: translateX(26px);
+                  }
+                }
+
+                .slider {
+                  position: absolute;
+                  cursor: pointer;
+                  top: 0;
+                  left: 0;
+                  right: 0;
+                  bottom: 0;
+                  background: #64748b;
+                  transition: .4s;
+                  border-radius: 24px;
+
+                  &:before {
+                    position: absolute;
+                    content: "";
+                    height: 16px;
+                    width: 16px;
+                    left: 4px;
+                    bottom: 4px;
+                    background: white;
+                    transition: .4s;
+                    border-radius: 50%;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+
+      .security-grid, .integrations-grid {
+        display: grid;
+        gap: 1rem;
+
+        .security-card, .integration-card {
+          background: rgba(15, 23, 42, 0.6);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 12px;
+          padding: 1.5rem;
+          transition: all 0.3s ease;
+
+          &:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+          }
+        }
+      }
+    }
+  }
+
+  .loading-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem;
+
+    .loading-text {
+      font-size: 1.2rem;
+      color: #94a3b8;
+    }
+  }
+
+  .settings-footer {
+    margin-top: 2rem;
+    text-align: center;
+
+    .footer-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+
+      .action-btn {
+        padding: 1rem 1.5rem;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+
+        &.reset-btn {
+          background: rgba(239, 68, 68, 0.2);
+          color: #ef4444;
+          border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        &.health-btn {
+          background: rgba(16, 185, 129, 0.2);
+          color: #10b981;
+          border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+      }
+    }
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .legendary-settings {
+    padding: 1rem;
+
+    .settings-header .header-content {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .settings-nav .nav-container {
+      grid-template-columns: 1fr;
+    }
+  }
+}

@@ -1,0 +1,276 @@
+<!-- LEGENDARY ANALYTICS DASHBOARD - BUSINESS INTELLIGENCE THAT IMPRESSES -->
+<div class="legendary-analytics">
+  <!-- Header That Shows Business Dominance -->
+  <header class="analytics-header">
+    <div class="header-content">
+      <div class="title-section">
+        <h1 class="page-title">
+          <span class="title-icon">📈</span>
+          Business Intelligence Dashboard
+          <span class="premium-badge">ENTERPRISE GRADE</span>
+        </h1>
+        <p class="page-subtitle">Real-time Analytics That Make Investors Beg to Fund You</p>
+      </div>
+      <!-- Time Range Selector -->
+      <div class="time-selector">
+        <span class="time-label">Time Range:</span>
+        <div class="time-buttons">
+          <button *ngFor="let range of ['7d', '30d', '90d', '1y', 'all']"
+                  [class.active]="timeRange === range"
+                  (click)="changeTimeRange(range)"
+                  class="time-btn">
+            {{ range }}
+          </button>
+        </div>
+        <span class="current-range">{{ getTimeRangeDisplay() }}</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Real-time Stats Bar -->
+  <section class="realtime-stats" *ngIf="!isLoading">
+    <div class="stats-bar">
+      <div class="realtime-stat">
+        <span class="stat-icon">👥</span>
+        <div class="stat-content">
+          <span class="stat-value">{{ realTimeStats.activeUsers }}</span>
+          <span class="stat-label">Active Now</span>
+        </div>
+        <span class="stat-badge live">LIVE</span>
+      </div>
+      <div class="realtime-stat">
+        <span class="stat-icon">💤</span>
+        <div class="stat-content">
+          <span class="stat-value">{{ realTimeStats.currentSessions }}</span>
+          <span class="stat-label">Sleep Sessions</span>
+        </div>
+        <span class="stat-badge live">LIVE</span>
+      </div>
+      <div class="realtime-stat">
+        <span class="stat-icon">💰</span>
+        <div class="stat-content">
+          <span class="stat-value">${{ realTimeStats.revenueToday | number:'1.2-2' }}</span>
+          <span class="stat-label">Revenue Today</span>
+        </div>
+        <span class="stat-badge live">LIVE</span>
+      </div>
+      <div class="realtime-stat">
+        <span class="stat-icon">📱</span>
+        <div class="stat-content">
+          <span class="stat-value">{{ realTimeStats.appDownloads }}</span>
+          <span class="stat-label">Downloads Today</span>
+        </div>
+        <span class="stat-badge live">LIVE</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Core Metrics Grid -->
+  <section class="metrics-section" *ngIf="!isLoading; else loadingTemplate">
+    <div class="section-header">
+      <h2>🎯 Key Performance Indicators</h2>
+      <div class="section-actions">
+        <button class="action-btn export-btn" (click)="exportAnalyticsReport()">
+          📊 Export Report
+        </button>
+        <button class="action-btn investor-btn" (click)="showInvestorDeck()">
+          🎯 Investor Deck
+        </button>
+        <button class="action-btn growth-btn" (click)="simulateDataGrowth()">
+          📈 Simulate Growth
+        </button>
+        <button class="action-btn competitor-btn" (click)="showCompetitiveAnalysis()">
+          💀 Competitor Analysis
+        </button>
+      </div>
+    </div>
+    <div class="metrics-grid">
+      <div *ngFor="let metric of metrics" class="metric-card" [class]="'metric-' + metric.color">
+        <div class="metric-header">
+          <div class="metric-icon">{{ metric.icon }}</div>
+          <div class="metric-trend" [style.color]="getTrendColor(metric.trend)">
+            {{ getTrendIcon(metric.trend) }} {{ metric.change }}
+          </div>
+        </div>
+        <div class="metric-content">
+          <h3 class="metric-title">{{ metric.title }}</h3>
+          <p class="metric-value">{{ formatValue(metric) }}</p>
+        </div>
+        <div class="metric-chart">
+          <div class="sparkline">
+            <div *ngFor="let i of [0,1,2,3,4]" 
+                 class="spark-bar"
+                 [style.height]="(getRandomHeight(i)) + '%'">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Charts Section -->
+  <section class="charts-section" *ngIf="!isLoading">
+    <div class="charts-grid">
+      <!-- User Growth Chart -->
+      <div class="chart-card">
+        <div class="chart-header">
+          <h3>👥 User Growth Analytics</h3>
+          <span class="chart-subtitle">New vs Returning Users</span>
+        </div>
+        <div class="chart-container">
+          <div class="mock-chart user-growth-chart">
+            <div class="chart-bars">
+              <div *ngFor="let day of userGrowthData.slice(-14)" class="chart-bar-group">
+                <div class="bar new-users" [style.height]="(day.newUsers / 40 * 100) + '%'"></div>
+                <div class="bar returning-users" [style.height]="(day.returningUsers / 200 * 100) + '%'"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="chart-stats">
+          <div class="chart-stat">
+            <span class="stat-value">{{ getTotalUsers() | number }}</span>
+            <span class="stat-label">Total Users</span>
+          </div>
+          <div class="chart-stat">
+            <span class="stat-value">{{ userGrowthData[userGrowthData.length - 1]?.newUsers || 0 }}</span>
+            <span class="stat-label">New Today</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Revenue Chart -->
+      <div class="chart-card">
+        <div class="chart-header">
+          <h3>💰 Revenue Performance</h3>
+          <span class="chart-subtitle">Monthly Recurring Revenue</span>
+        </div>
+        <div class="chart-container">
+          <div class="mock-chart revenue-chart">
+            <div class="chart-line">
+              <div *ngFor="let month of revenueData; let i = index"
+                   class="line-point"
+                   [style.left]="(i / (revenueData.length - 1)) * 100 + '%'"
+                   [style.bottom]="(month.revenue / 15000 * 100) + '%'">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="chart-stats">
+          <div class="chart-stat">
+            <span class="stat-value">${{ getTotalRevenue() | number }}</span>
+            <span class="stat-label">Total Revenue</span>
+          </div>
+          <div class="chart-stat">
+            <span class="stat-value">{{ revenueData[revenueData.length - 1]?.growth || 0 }}%</span>
+            <span class="stat-label">Growth</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sleep Metrics Chart -->
+      <div class="chart-card">
+        <div class="chart-header">
+          <h3>💤 Sleep Metrics</h3>
+          <span class="chart-subtitle">Duration vs Quality</span>
+        </div>
+        <div class="chart-container">
+          <div class="mock-chart sleep-metrics-chart">
+            <div class="dual-chart">
+              <div class="chart-line duration-line">
+                <div *ngFor="let day of sleepMetricsData; let i = index"
+                     class="line-point"
+                     [style.left]="(i / (sleepMetricsData.length - 1)) * 100 + '%'"
+                     [style.bottom]="((day.avgDuration - 6) * 25) + '%'">
+                </div>
+              </div>
+              <div class="chart-line quality-line">
+                <div *ngFor="let day of sleepMetricsData; let i = index"
+                     class="line-point"
+                     [style.left]="(i / (sleepMetricsData.length - 1)) * 100 + '%'"
+                     [style.bottom]="(day.avgQuality - 70) + '%'">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="chart-stats">
+          <div class="chart-stat">
+            <span class="stat-value">{{ getAverageSleepDuration() | number:'1.1-1' }}h</span>
+            <span class="stat-label">Avg Duration</span>
+          </div>
+          <div class="chart-stat">
+            <span class="stat-value">{{ getAverageSleepQuality() }}%</span>
+            <span class="stat-label">Avg Quality</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Business Intelligence Card -->
+      <div class="chart-card business-intel">
+        <div class="chart-header">
+          <h3>🎯 Business Intelligence</h3>
+          <span class="chart-subtitle">Key Financial Metrics</span>
+        </div>
+        <div class="business-metrics">
+          <div class="business-metric">
+            <div class="metric-info">
+              <span class="metric-label">Customer Lifetime Value</span>
+              <span class="metric-value">${{ calculateLifetimeValue() | number:'1.0-0' }}</span>
+            </div>
+            <div class="metric-progress">
+              <div class="progress-bar" [style.width]="'75%'"></div>
+            </div>
+          </div>
+          <div class="business-metric">
+            <div class="metric-info">
+              <span class="metric-label">Acquisition Cost</span>
+              <span class="metric-value">${{ calculateUserAcquisitionCost() | number:'1.2-2' }}</span>
+            </div>
+            <div class="metric-progress">
+              <div class="progress-bar" [style.width]="'45%'"></div>
+            </div>
+          </div>
+          <div class="business-metric">
+            <div class="metric-info">
+              <span class="metric-label">Return on Investment</span>
+              <span class="metric-value">{{ getROI() | number:'1.0-0' }}%</span>
+            </div>
+            <div class="metric-progress">
+              <div class="progress-bar" [style.width]="'92%'"></div>
+            </div>
+          </div>
+          <div class="business-metric">
+            <div class="metric-info">
+              <span class="metric-label">Viral Coefficient</span>
+              <span class="metric-value">1.8</span>
+            </div>
+            <div class="metric-progress">
+              <div class="progress-bar" [style.width]="'90%'"></div>
+            </div>
+          </div>
+        </div>
+        <div class="intel-summary">
+          <span class="summary-text">🚀 Business Health: EXCELLENT</span>
+          <span class="summary-subtext">All metrics exceeding industry standards</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Loading Template -->
+  <ng-template #loadingTemplate>
+    <div class="loading-state">
+      <div class="loading-animation">
+        <div class="chart-loader"></div>
+        <div class="loading-text">
+          <span class="loading-icon">📈</span>
+          Loading enterprise analytics...
+        </div>
+        <div class="loading-subtext">
+          Preparing investor-grade business intelligence
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</div>

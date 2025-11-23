@@ -1,0 +1,270 @@
+<!-- LEGENDARY SUBSCRIPTIONS - REVENUE OPTIMIZATION ENGINE -->
+<div class="legendary-subscriptions">
+  <!-- Header That Shows Revenue Dominance -->
+  <header class="subscriptions-header">
+    <div class="header-content">
+      <div class="title-section">
+        <h1 class="page-title">
+          <span class="title-icon">💎</span>
+          Revenue Engine
+          <span class="revenue-badge">${{ getTotalRevenue() | number:'1.0-0' }}/MO</span>
+        </h1>
+        <p class="page-subtitle">Subscription Management That Prints Money While You Sleep</p>
+      </div>
+      
+      <!-- Revenue Stats -->
+      <div class="header-stats">
+        <div class="stat-badge total-revenue">
+          <div class="stat-icon">💰</div>
+          <div class="stat-content">
+            <span class="stat-number">${{ getTotalRevenue() | number:'1.0-0' }}</span>
+            <span class="stat-label">Monthly Revenue</span>
+            <span class="stat-trend">+28.3% GROWTH</span>
+          </div>
+        </div>
+        
+        <div class="stat-badge active-subscriptions">
+          <div class="stat-icon">👥</div>
+          <div class="stat-content">
+            <span class="stat-number">{{ getTotalUsers() | number }}</span>
+            <span class="stat-label">Active Users</span>
+            <span class="stat-trend">+12.5% GROWTH</span>
+          </div>
+        </div>
+        
+        <div class="stat-badge trial-users">
+          <div class="stat-icon">🎯</div>
+          <div class="stat-content">
+            <span class="stat-number">{{ getTrialUsersCount() }}</span>
+            <span class="stat-label">Trial Users</span>
+            <span class="stat-trend">{{ getAverageConversionRate() }}% CONVERSION</span>
+          </div>
+        </div>
+        
+        <div class="stat-badge churn-rate">
+          <div class="stat-icon">📉</div>
+          <div class="stat-content">
+            <span class="stat-number">{{ churnRate }}%</span>
+            <span class="stat-label">Churn Rate</span>
+            <span class="stat-trend">-12.8% IMPROVED</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Quick Actions Bar -->
+  <div class="quick-actions">
+    <div class="actions-bar">
+      <button class="quick-action-btn create-plan-btn" (click)="createNewPlan()">
+        <span class="action-icon">🎯</span>
+        Create New Plan
+      </button>
+      
+      <button class="quick-action-btn forecast-btn" (click)="showRevenueForecast()">
+        <span class="action-icon">🔮</span>
+        Revenue Forecast
+      </button>
+      
+      <button class="quick-action-btn optimize-btn" (click)="optimizePricingStrategy()">
+        <span class="action-icon">⚡</span>
+        Optimize Pricing
+      </button>
+      
+      <button class="quick-action-btn churn-btn" (click)="runChurnAnalysis()">
+        <span class="action-icon">📉</span>
+        Churn Analysis
+      </button>
+      
+      <button class="quick-action-btn campaign-btn" (click)="launchPromotionalCampaign()">
+        <span class="action-icon">🎁</span>
+        Launch Campaign
+      </button>
+      
+      <button class="quick-action-btn export-btn" (click)="exportRevenueReport()">
+        <span class="action-icon">📊</span>
+        Export Report
+      </button>
+    </div>
+  </div>
+
+  <!-- Plans Section - Money Printing Machine -->
+  <section class="plans-section">
+    <div class="section-header">
+      <h2>🎯 Revenue-Generating Plans</h2>
+      <p>Subscription tiers that convert users into revenue machines</p>
+    </div>
+    
+    <div class="plans-grid">
+      <div *ngFor="let plan of plans" class="plan-card" [class]="plan.type" [class.featured]="plan.popular">
+        <div *ngIf="plan.popular" class="plan-banner">MOST POPULAR</div>
+        
+        <div class="plan-header">
+          <div class="plan-icon">
+            <span *ngIf="plan.type === 'free'">🎁</span>
+            <span *ngIf="plan.type === 'premium'">💎</span>
+            <span *ngIf="plan.type === 'enterprise'">🏢</span>
+          </div>
+          <h3 class="plan-name">{{ plan.name }}</h3>
+          <span class="plan-badge">{{ plan.type }}</span>
+        </div>
+        
+        <div class="plan-price">
+          <span class="price-amount">${{ plan.price }}</span>
+          <span class="price-period">/{{ plan.interval }}</span>
+        </div>
+        
+        <p class="plan-description">{{ plan.description }}</p>
+        
+        <div class="plan-features">
+          <div *ngFor="let feature of plan.features" class="feature-item">
+            ✅ {{ feature }}
+          </div>
+        </div>
+        
+        <div class="plan-stats">
+          <div class="stat">
+            <span class="stat-value">{{ plan.activeUsers | number }}</span>
+            <span class="stat-label">Users</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value">${{ plan.monthlyRevenue | number }}</span>
+            <span class="stat-label">Revenue</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value">{{ plan.conversionRate }}%</span>
+            <span class="stat-label">Conversion</span>
+          </div>
+        </div>
+        
+        <div class="plan-actions">
+          <button class="action-btn edit-btn" (click)="editPlan(plan)">
+            ✏️ Optimize
+          </button>
+          <button class="action-btn analytics-btn" (click)="viewPlanAnalytics(plan)">
+            📊 Analytics
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Subscriptions Table Section -->
+  <section class="subscriptions-table-section">
+    <div class="section-header">
+      <h2>📋 Active Subscriptions</h2>
+      <p>Manage your revenue-generating user base</p>
+      
+      <div class="table-controls">
+        <div class="control-group">
+          <input type="text" 
+                 [(ngModel)]="searchTerm" 
+                 placeholder="🔍 Search users..." 
+                 class="search-input">
+        </div>
+        
+        <div class="control-group">
+          <select [(ngModel)]="selectedStatus" class="filter-select">
+            <option value="all">All Status</option>
+            <option value="active">Active</option>
+            <option value="canceled">Canceled</option>
+            <option value="past_due">Past Due</option>
+            <option value="trialing">Trialing</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <select [(ngModel)]="selectedPlan" class="filter-select">
+            <option value="all">All Plans</option>
+            <option value="Free Forever">Free</option>
+            <option value="Sleep Pro">Pro</option>
+            <option value="Enterprise Suite">Enterprise</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <table class="subscriptions-table">
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Plan</th>
+            <th>Status</th>
+            <th>Billing</th>
+            <th>Revenue</th>
+            <th>Next Bill</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let subscription of getFilteredSubscriptions()" class="subscription-row">
+            <td class="user-cell">
+              <div class="user-avatar">
+                {{ subscription.userName.charAt(0) }}
+              </div>
+              <div class="user-info">
+                <div class="user-name">{{ subscription.userName }}</div>
+                <div class="user-email">{{ subscription.userEmail }}</div>
+              </div>
+            </td>
+            
+            <td class="plan-cell">
+              <span class="plan-badge" [class]="getPlanClass(subscription.planName)">
+                {{ getPlanDisplayName(subscription.planName) }}
+              </span>
+            </td>
+            
+            <td class="status-cell">
+              <span class="status-badge" [class]="getStatusClass(subscription.status)">
+                {{ getStatusDisplayName(subscription.status) }}
+              </span>
+            </td>
+            
+            <td class="billing-cell">
+              <div class="billing-amount">${{ subscription.amount }}</div>
+              <div class="billing-cycle">monthly</div>
+            </td>
+            
+            <td class="revenue-cell">
+              <div class="revenue-amount">${{ subscription.amount * 12 | number:'1.0-0' }}</div>
+              <div class="revenue-period">annual</div>
+            </td>
+            
+            <td class="next-bill-cell">
+              <div class="next-bill-date">{{ subscription.currentPeriodEnd }}</div>
+              <div class="days-until" [class.urgent]="isUrgent(subscription.currentPeriodEnd)">
+                {{ getDaysUntil(subscription.currentPeriodEnd) }}
+              </div>
+            </td>
+            
+            <td class="actions-cell">
+              <button class="action-btn manage-btn">
+                ⚙️ Manage
+              </button>
+              <button class="action-btn upgrade-btn" (click)="upgradeUserPlan(subscription)">
+                🚀 Upgrade
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="getFilteredSubscriptions().length === 0 && !isLoading" class="empty-state">
+      <div class="empty-icon">💎</div>
+      <h3>No Subscriptions Found</h3>
+      <p>Try adjusting your search criteria or create a new subscription plan</p>
+      <button class="create-first-btn" (click)="createNewPlan()">
+        🎯 Create First Plan
+      </button>
+    </div>
+  </section>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Loading revenue data...</div>
+  </div>
+</div>

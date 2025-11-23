@@ -1,0 +1,350 @@
+<!-- LEGENDARY SOUND LIBRARY - COMPETITOR DESTRUCTION MODE -->
+<div class="legendary-sounds">
+  <!-- Header that makes Spotify cry -->
+  <header class="sounds-header">
+    <div class="header-content">
+      <div class="title-section">
+        <h1 class="page-title">
+          <span class="title-icon">🎵</span>
+          Premium Sound Library
+          <span class="ai-badge">AI-CURATED</span>
+        </h1>
+        <p class="page-subtitle">Manage 260+ Sounds That Make Calm & Headspace Look Amateur</p>
+      </div>
+      
+      <!-- Stats that show we're audio gods -->
+      <div class="header-stats">
+        <div class="stat-badge total-sounds">
+          <div class="stat-icon">🎵</div>
+          <div class="stat-content">
+            <span class="stat-number">{{ getTotalSoundsCount() }}</span>
+            <span class="stat-label">Total Sounds</span>
+            <span class="stat-trend">+15 new this week</span>
+          </div>
+        </div>
+        <div class="stat-badge premium-sounds">
+          <div class="stat-icon">💎</div>
+          <div class="stat-content">
+            <span class="stat-number">{{ getPremiumSoundsCount() }}</span>
+            <span class="stat-label">Premium Sounds</span>
+            <span class="stat-trend">Exclusive content</span>
+          </div>
+        </div>
+        <div class="stat-badge total-plays">
+          <div class="stat-icon">▶️</div>
+          <div class="stat-content">
+            <span class="stat-number">{{ getTotalPlays() | number }}</span>
+            <span class="stat-label">Total Plays</span>
+            <span class="stat-trend">2.4M+ this month</span>
+          </div>
+        </div>
+        <div class="stat-badge revenue-sounds">
+          <div class="stat-icon">💰</div>
+          <div class="stat-content">
+            <span class="stat-number">${{ calculateSoundRevenue() | number }}</span>
+            <span class="stat-label">Sound Revenue</span>
+            <span class="stat-trend">+28% growth</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Control Panel - Audio Engineering Grade -->
+  <section class="control-panel">
+    <div class="panel-grid">
+      <!-- Search that finds sounds like magic -->
+      <div class="search-section">
+        <div class="search-box">
+          <span class="search-icon">🔊</span>
+          <input 
+            type="text" 
+            [value]="searchTerm" 
+            (input)="searchTerm = $any($event.target).value; applyFilters()"
+            placeholder="Search 260+ premium sounds... (competitors have 50)" 
+            class="search-input"
+          >
+          <button class="search-ai" title="AI Sound Search">
+            🧠
+          </button>
+        </div>
+      </div>
+
+      <!-- Filters that make audio apps jealous -->
+      <div class="filter-section">
+        <select [value]="selectedCategory" (change)="selectedCategory = $any($event.target).value; applyFilters()" class="filter-select category">
+          <option value="all">🎵 All Categories</option>
+          <option value="nature">🌿 Nature</option>
+          <option value="ambient">🌀 Ambient</option>
+          <option value="white-noise">📻 White Noise</option>
+          <option value="meditation">🧘 Meditation</option>
+          <option value="urban">🏙️ Urban</option>
+          <option value="binaural">🎧 Binaural</option>
+          <option value="asmr">👂 ASMR</option>
+        </select>
+
+        <select [value]="selectedPremium" (change)="selectedPremium = $any($event.target).value; applyFilters()" class="filter-select premium">
+          <option value="all">💎 All Tiers</option>
+          <option value="premium">🚀 Premium Only</option>
+          <option value="free">🎯 Free Sounds</option>
+        </select>
+
+        <button class="upload-btn" (click)="uploadSound()">
+          📤 Upload Sound
+        </button>
+
+        <button class="ai-master-btn" (click)="showAIMastering()">
+          🎛️ AI Mastering
+        </button>
+
+        <button class="batch-edit-btn" (click)="enableBatchEdit()">
+          🔧 Batch Edit
+        </button>
+      </div>
+    </div>
+
+    <!-- Results counter that shows audio dominance -->
+    <div class="results-info">
+      <span class="results-count">Showing {{ filteredSounds.length }} of {{ sounds.length }} premium sounds</span>
+      <span class="results-stats">🎧 {{ getTotalDuration() }} total audio • 📊 {{ getAverageQuality() }}% avg quality</span>
+    </div>
+  </section>
+
+  <!-- Sounds Grid - That makes audio competitors weep -->
+  <section class="sounds-grid-section" *ngIf="!isLoading; else loadingTemplate">
+    <div class="sounds-grid">
+      <div *ngFor="let sound of getPaginatedSounds()" class="sound-card" [class.premium]="sound.premium">
+        <!-- Sound Header - Professional Audio Grade -->
+        <div class="sound-header">
+          <div class="sound-badges">
+            <span [class]="'category-badge ' + getCategoryBadgeClass(sound.category)">
+              {{ getCategoryDisplayName(sound.category) }}
+            </span>
+            <span [class]="'premium-badge ' + getPremiumBadgeClass(sound.premium)">
+              {{ sound.premium ? '💎 PREMIUM' : '🎯 FREE' }}
+            </span>
+            <span *ngIf="sound.featured" class="featured-badge">
+              ⭐ FEATURED
+            </span>
+          </div>
+          
+          <div class="sound-actions">
+            <button class="action-btn preview-btn" (click)="previewSound(sound)" title="Preview Sound">
+              🔊
+            </button>
+            <button class="action-btn edit-btn" (click)="editSound(sound)" title="Edit Sound">
+              ⚡
+            </button>
+            <button class="action-btn more-btn" (click)="showMoreActions(sound)" title="More Actions">
+              🔧
+            </button>
+          </div>
+        </div>
+
+        <!-- Sound Content - Audio Engineering Excellence -->
+        <div class="sound-content">
+          <h3 class="sound-name">{{ sound.name }}</h3>
+          <p class="sound-description">{{ sound.description || 'Professionally mastered sleep sound' }}</p>
+          
+          <div class="sound-meta">
+            <div class="meta-item">
+              <span class="meta-icon">⏱️</span>
+              <span class="meta-text">{{ sound.duration }}</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-icon">📦</span>
+              <span class="meta-text">{{ sound.fileSize }}</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-icon">🎚️</span>
+              <span class="meta-text">{{ sound.bitrate }}</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-icon">📊</span>
+              <span class="meta-text">{{ sound.quality }}% quality</span>
+            </div>
+          </div>
+
+          <!-- Audio Visualization -->
+          <div class="audio-visualization">
+            <div class="waveform">
+              <div *ngFor="let bar of generateWaveform()" 
+                   class="wave-bar" 
+                   [style.height]="bar + '%'">
+              </div>
+            </div>
+            <div class="audio-controls">
+              <button class="control-btn play-btn" (click)="togglePlay(sound)">
+                {{ isPlaying(sound) ? '⏸️' : '▶️' }}
+              </button>
+              <div class="volume-control">
+                <span class="volume-icon">🔊</span>
+                <input type="range" min="0" max="100" value="75" class="volume-slider">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sound Stats - Engagement Metrics -->
+        <div class="sound-stats">
+          <div class="stat-item">
+            <span class="stat-icon">▶️</span>
+            <span class="stat-value">{{ sound.plays | number }}</span>
+            <span class="stat-label">Plays</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-icon">⭐</span>
+            <span class="stat-value">{{ sound.rating }}/5</span>
+            <span class="stat-label">Rating</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-icon">💾</span>
+            <span class="stat-value">{{ sound.downloads | number }}</span>
+            <span class="stat-label">Downloads</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-icon">🔄</span>
+            <span class="stat-value">{{ sound.usage }}%</span>
+            <span class="stat-label">Usage</span>
+          </div>
+        </div>
+
+        <!-- Sound Footer - Management & Analytics -->
+        <div class="sound-footer">
+          <div class="sound-info">
+            <div class="upload-info">
+              <span class="upload-date">Added {{ sound.uploadDate }}</span>
+              <span class="uploader">by {{ sound.uploader || 'Audio Master' }}</span>
+            </div>
+            <div class="sound-tags">
+              <span *ngFor="let tag of sound.tags" class="sound-tag">
+                #{{ tag }}
+              </span>
+            </div>
+          </div>
+          
+          <div class="sound-management">
+            <button *ngIf="!sound.premium" class="upgrade-btn" (click)="upgradeToPremium(sound)">
+              💎 Upgrade
+            </button>
+            <button *ngIf="sound.premium" class="feature-btn" (click)="toggleFeatured(sound)">
+              {{ sound.featured ? '⭐ Featured' : '🌟 Feature' }}
+            </button>
+            <button class="analytics-btn" (click)="showSoundAnalytics(sound)">
+              📈 Analytics
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pagination - For 260+ Sounds -->
+    <div class="pagination-section" *ngIf="filteredSounds.length > itemsPerPage">
+      <div class="pagination-info">
+        <span>Page {{ currentPage }} of {{ getTotalPages() }}</span>
+        <span class="sounds-count">{{ getCurrentPageStart() }}-{{ getCurrentPageEnd() }} of {{ filteredSounds.length }} sounds</span>
+      </div>
+      
+      <div class="pagination-controls">
+        <button class="pagination-btn first" [disabled]="currentPage === 1" (click)="goToPage(1)">
+          ⏮️ First
+        </button>
+        <button class="pagination-btn prev" [disabled]="currentPage === 1" (click)="previousPage()">
+          ◀️ Previous
+        </button>
+        
+        <div class="page-numbers">
+          <button *ngFor="let page of getVisiblePages()" 
+                  [class]="'page-btn ' + (page === currentPage ? 'active' : '')"
+                  (click)="goToPage(page)" [disabled]="page === -1">
+            {{ page === -1 ? '...' : page }}
+          </button>
+        </div>
+        
+        <button class="pagination-btn next" [disabled]="currentPage === getTotalPages()" (click)="nextPage()">
+          Next ▶️
+        </button>
+        <button class="pagination-btn last" [disabled]="currentPage === getTotalPages()" (click)="goToPage(getTotalPages())">
+          Last ⏭️
+        </button>
+      </div>
+
+      <div class="page-size-selector">
+        <span>Show:</span>
+        <select [value]="itemsPerPage" (change)="changePageSize($any($event.target).value)">
+          <option value="12">12</option>
+          <option value="24">24</option>
+          <option value="48">48</option>
+          <option value="96">96</option>
+        </select>
+        <span>sounds per page</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Loading State - Audio Engineering Grade -->
+  <ng-template #loadingTemplate>
+    <div class="loading-state">
+      <div class="loading-animation">
+        <div class="audio-wave-loader"></div>
+        <div class="loading-text">
+          <span class="loading-icon">🎵</span>
+          Loading premium sound library...
+        </div>
+        <div class="loading-subtext">
+          Mastering 260+ competitor-destroying audio files
+        </div>
+      </div>
+    </div>
+  </ng-template>
+
+  <!-- Empty State - When filters are too powerful -->
+  <div *ngIf="!isLoading && filteredSounds.length === 0" class="empty-state">
+    <div class="empty-animation">
+      <div class="empty-icon">🔊</div>
+      <div class="sound-wave"></div>
+    </div>
+    <h3>No Legendary Sounds Found</h3>
+    <p>Your audio standards are too high! Try relaxing your filters.</p>
+    <button class="reset-filters-btn" (click)="resetFilters()">
+      🎯 Reset All Filters
+    </button>
+    <button class="ai-suggest-btn" (click)="getAISoundSuggestions()">
+      🧠 AI Sound Suggestions
+    </button>
+  </div>
+
+  <!-- AI Mastering Panel - Professional Audio Tools -->
+  <div *ngIf="showMastering" class="ai-mastering-panel">
+    <div class="mastering-header">
+      <h3>🎛️ AI Audio Mastering</h3>
+      <button class="close-mastering" (click)="showMastering = false">✕</button>
+    </div>
+    <div class="mastering-content">
+      <div class="mastering-presets">
+        <h4>Mastering Presets</h4>
+        <div class="preset-grid">
+          <button class="preset-btn" *ngFor="let preset of getMasteringPresets()" 
+                  (click)="applyMasteringPreset(preset)">
+            {{ preset.name }}
+          </button>
+        </div>
+      </div>
+      <div class="mastering-controls">
+        <h4>Manual Controls</h4>
+        <div class="control-group">
+          <label>EQ Boost</label>
+          <input type="range" min="0" max="100" value="50">
+        </div>
+        <div class="control-group">
+          <label>Compression</label>
+          <input type="range" min="0" max="100" value="75">
+        </div>
+        <div class="control-group">
+          <label>Normalization</label>
+          <input type="range" min="0" max="100" value="90">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

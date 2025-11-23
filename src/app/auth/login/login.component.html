@@ -1,0 +1,88 @@
+<div class="legendary-login-container">
+  <div class="login-glass-card">
+    <!-- Header that makes competitors cry -->
+    <div class="login-header">
+      <div class="logo-section">
+        <div class="logo-icon">💤</div>
+        <h1 class="logo-text">SleepTracker <span class="pro-badge">PRO</span></h1>
+      </div>
+      <p class="tagline">Admin Dashboard That Makes Competitors Weep</p>
+    </div>
+
+    <!-- Login form that's smoother than Malik's operations -->
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <!-- Email field that validates like a boss -->
+      <div class="input-group">
+        <label class="input-label">Admin Email</label>
+        <div class="input-container">
+          <span class="input-icon">👑</span>
+          <input 
+            type="email" 
+            formControlName="email"
+            placeholder="admin@admin.com"
+            class="legendary-input"
+            [class.error]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+        </div>
+        <div class="error-message" *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+          {{ getEmailErrorMessage() }}
+        </div>
+      </div>
+
+      <!-- Password field that's more secure than Fort Knox -->
+      <div class="input-group">
+        <label class="input-label">Master Password</label>
+        <div class="input-container">
+          <span class="input-icon">🔒</span>
+          <input 
+            type="password" 
+            formControlName="password"
+            placeholder="••••••••"
+            class="legendary-input"
+            [class.error]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+        </div>
+        <div class="error-message" *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+          Password is required to access legendary features
+        </div>
+      </div>
+
+      <!-- Login button that screams PROFESSIONAL -->
+      <button 
+        type="submit"
+        class="legendary-login-btn"
+        [disabled]="!loginForm.valid || isLoading"
+        [class.loading]="isLoading">
+        <span *ngIf="!isLoading">🚀 ACCESS LEGENDARY DASHBOARD</span>
+        <div *ngIf="isLoading" class="loading-spinner">
+          <div class="spinner"></div>
+          <span>AUTHENTICATING LIKE A BOSS...</span>
+        </div>
+      </button>
+
+      <!-- Error message that appears when competitors try to hack -->
+      <div *ngIf="errorMessage" class="epic-error-message">
+        <span class="error-icon">⚠️</span>
+        <span class="error-text">{{ errorMessage }}</span>
+      </div>
+    </form>
+
+    <!-- Footer that makes other admins jealous -->
+    <div class="login-footer">
+      <div class="credentials-hint">
+        <strong>🔥 LEGENDARY CREDENTIALS:</strong><br>
+        Email: <code>admin@admin.com</code> | Password: <code>admin123</code>
+      </div>
+      <div class="security-badge">
+        <span class="shield-icon">🛡️</span>
+        Enterprise-Grade Security • Real-time Analytics • 260+ Sounds Managed
+      </div>
+    </div>
+  </div>
+
+  <!-- Background animation that flexes on competitors -->
+  <div class="background-animation">
+    <div class="floating-icon">📊</div>
+    <div class="floating-icon">👥</div>
+    <div class="floating-icon">🎵</div>
+    <div class="floating-icon">💎</div>
+  </div>
+</div>

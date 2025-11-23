@@ -1,0 +1,777 @@
+// LEGENDARY ANALYTICS STYLES - BUSINESS INTELLIGENCE THAT IMPRESSES
+.legendary-analytics {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+  color: #f8fafc;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  padding: 2rem;
+
+  // Header that shows business dominance
+  .analytics-header {
+    margin-bottom: 3rem;
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 2rem;
+
+      .title-section {
+        .page-title {
+          font-size: 3rem;
+          font-weight: 900;
+          margin: 0;
+          background: linear-gradient(135deg, #60a5fa, #a78bfa, #f472b6);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+
+          .title-icon {
+            font-size: 3.5rem;
+            animation: bounce 2s infinite;
+          }
+
+          .premium-badge {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3);
+          }
+        }
+
+        .page-subtitle {
+          color: #94a3b8;
+          margin: 0.5rem 0 0 0;
+          font-size: 1.2rem;
+          font-weight: 500;
+        }
+      }
+
+      .time-selector {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        background: rgba(30, 41, 59, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 15px;
+        padding: 1rem 1.5rem;
+        backdrop-filter: blur(10px);
+
+        .time-label {
+          color: #94a3b8;
+          font-weight: 600;
+          font-size: 0.9rem;
+        }
+
+        .time-buttons {
+          display: flex;
+          gap: 0.5rem;
+
+          .time-btn {
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: #94a3b8;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 0.8rem;
+
+            &.active {
+              background: linear-gradient(135deg, #60a5fa, #3b82f6);
+              color: white;
+              border-color: #3b82f6;
+            }
+
+            &:hover:not(.active) {
+              background: rgba(255, 255, 255, 0.2);
+            }
+          }
+        }
+
+        .current-range {
+          color: #f1f5f9;
+          font-weight: 700;
+          font-size: 0.9rem;
+          margin-left: 1rem;
+        }
+      }
+    }
+  }
+
+  // Real-time Stats Bar
+  .realtime-stats {
+    margin-bottom: 2rem;
+
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+
+      .realtime-stat {
+        background: rgba(30, 41, 59, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 15px;
+        padding: 1.5rem;
+        backdrop-filter: blur(10px);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+
+        &:hover {
+          transform: translateY(-3px);
+          border-color: rgba(255, 255, 255, 0.2);
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-icon {
+          font-size: 2.5rem;
+        }
+
+        .stat-content {
+          flex: 1;
+
+          .stat-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            display: block;
+            background: linear-gradient(135deg, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+          }
+
+          .stat-label {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            font-weight: 600;
+          }
+        }
+
+        .stat-badge {
+          &.live {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            animation: pulse 2s infinite;
+          }
+        }
+      }
+    }
+  }
+
+  // Core Metrics Grid
+  .metrics-section {
+    margin-bottom: 3rem;
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+
+      h2 {
+        font-size: 2rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #60a5fa, #a78bfa);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin: 0;
+      }
+
+      .section-actions {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+
+        .action-btn {
+          padding: 1rem 1.5rem;
+          border: none;
+          border-radius: 12px;
+          font-weight: 700;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          font-size: 0.9rem;
+
+          &.export-btn {
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            color: white;
+
+            &:hover {
+              transform: translateY(-2px);
+              box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+            }
+          }
+
+          &.investor-btn {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+
+            &:hover {
+              transform: translateY(-2px);
+              box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+            }
+          }
+
+          &.growth-btn {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+
+            &:hover {
+              transform: translateY(-2px);
+              box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
+            }
+          }
+
+          &.competitor-btn {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+
+            &:hover {
+              background: rgba(239, 68, 68, 0.3);
+              transform: translateY(-2px);
+            }
+          }
+        }
+      }
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+
+      .metric-card {
+        background: rgba(30, 41, 59, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 2rem;
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+
+        &:hover {
+          transform: translateY(-5px);
+          border-color: rgba(255, 255, 255, 0.2);
+          box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .metric-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 1.5rem;
+
+          .metric-icon {
+            font-size: 2.5rem;
+          }
+
+          .metric-trend {
+            font-size: 0.9rem;
+            font-weight: 800;
+            padding: 0.5rem 1rem;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.1);
+          }
+        }
+
+        .metric-content {
+          margin-bottom: 1.5rem;
+
+          .metric-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #94a3b8;
+            margin: 0 0 0.5rem 0;
+          }
+
+          .metric-value {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin: 0;
+            background: linear-gradient(135deg, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+          }
+        }
+
+        .metric-chart {
+          .sparkline {
+            display: flex;
+            align-items: end;
+            gap: 4px;
+            height: 40px;
+
+            .spark-bar {
+              flex: 1;
+              background: linear-gradient(to top, #60a5fa, #a78bfa);
+              border-radius: 2px 2px 0 0;
+              min-height: 10px;
+              transition: all 0.3s ease;
+
+              &:hover {
+                opacity: 0.8;
+              }
+            }
+          }
+        }
+
+        // Metric-specific colors
+        &.metric-blue {
+          .metric-icon { color: #60a5fa; }
+          .metric-trend { color: #60a5fa; }
+        }
+
+        &.metric-green {
+          .metric-icon { color: #10b981; }
+          .metric-trend { color: #10b981; }
+        }
+
+        &.metric-purple {
+          .metric-icon { color: #a78bfa; }
+          .metric-trend { color: #a78bfa; }
+        }
+
+        &.metric-orange {
+          .metric-icon { color: #f59e0b; }
+          .metric-trend { color: #f59e0b; }
+        }
+
+        &.metric-teal {
+          .metric-icon { color: #14b8a6; }
+          .metric-trend { color: #14b8a6; }
+        }
+
+        &.metric-red {
+          .metric-icon { color: #ef4444; }
+          .metric-trend { color: #ef4444; }
+        }
+      }
+    }
+  }
+
+  // Charts Section
+  .charts-section {
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 1.5rem;
+
+      .chart-card {
+        background: rgba(30, 41, 59, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 2rem;
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+
+        &:hover {
+          transform: translateY(-3px);
+          border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        &.business-intel {
+          background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(168, 85, 247, 0.1));
+          border-color: rgba(168, 85, 247, 0.3);
+        }
+
+        .chart-header {
+          margin-bottom: 1.5rem;
+
+          h3 {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #f1f5f9;
+            margin: 0 0 0.25rem 0;
+          }
+
+          .chart-subtitle {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            font-weight: 600;
+          }
+        }
+
+        .chart-container {
+          height: 200px;
+          margin-bottom: 1.5rem;
+          position: relative;
+
+          .mock-chart {
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.4);
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+
+            // User Growth Chart
+            &.user-growth-chart {
+              .chart-bars {
+                display: flex;
+                align-items: end;
+                gap: 2px;
+                height: 100%;
+                padding: 0 10px;
+
+                .chart-bar-group {
+                  flex: 1;
+                  display: flex;
+                  align-items: end;
+                  gap: 1px;
+                  height: 100%;
+
+                  .bar {
+                    flex: 1;
+                    border-radius: 2px 2px 0 0;
+                    transition: all 0.3s ease;
+
+                    &.new-users {
+                      background: linear-gradient(to top, #60a5fa, #3b82f6);
+                      height: 40%;
+                    }
+
+                    &.returning-users {
+                      background: linear-gradient(to top, #10b981, #059669);
+                      height: 70%;
+                    }
+
+                    &:hover {
+                      opacity: 0.8;
+                    }
+                  }
+                }
+              }
+            }
+
+            // Revenue Chart
+            &.revenue-chart {
+              .chart-line {
+                position: relative;
+                width: 100%;
+                height: 100%;
+
+                .line-point {
+                  position: absolute;
+                  width: 8px;
+                  height: 8px;
+                  background: #a78bfa;
+                  border-radius: 50%;
+                  transform: translate(-50%, 50%);
+                  border: 2px solid #0f172a;
+
+                  &::before {
+                    content: '';
+                    position: absolute;
+                    bottom: 0;
+                    left: 50%;
+                    width: 2px;
+                    height: 1000px;
+                    background: linear-gradient(to top, rgba(168, 85, 247, 0.3), transparent);
+                    transform: translateX(-50%);
+                  }
+                }
+              }
+            }
+
+            // Sleep Metrics Chart
+            &.sleep-metrics-chart {
+              .dual-chart {
+                position: relative;
+                width: 100%;
+                height: 100%;
+
+                .chart-line {
+                  position: absolute;
+                  bottom: 0;
+                  left: 0;
+                  right: 0;
+
+                  &.duration-line {
+                    .line-point {
+                      background: #60a5fa;
+                      
+                      &::before {
+                        background: linear-gradient(to top, rgba(96, 165, 250, 0.3), transparent);
+                      }
+                    }
+                  }
+
+                  &.quality-line {
+                    .line-point {
+                      background: #10b981;
+                      
+                      &::before {
+                        background: linear-gradient(to top, rgba(16, 185, 129, 0.3), transparent);
+                      }
+                    }
+                  }
+
+                  .line-point {
+                    position: absolute;
+                    width: 6px;
+                    height: 6px;
+                    border-radius: 50%;
+                    transform: translate(-50%, 50%);
+                    border: 2px solid #0f172a;
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        .chart-stats {
+          display: flex;
+          gap: 2rem;
+
+          .chart-stat {
+            text-align: center;
+            flex: 1;
+
+            .stat-value {
+              font-size: 1.5rem;
+              font-weight: 800;
+              display: block;
+              color: #f1f5f9;
+            }
+
+            .stat-label {
+              font-size: 0.8rem;
+              color: #94a3b8;
+              text-transform: uppercase;
+              letter-spacing: 0.5px;
+            }
+          }
+        }
+
+        // Business Intelligence Specific Styles
+        .business-metrics {
+          .business-metric {
+            margin-bottom: 1.5rem;
+
+            .metric-info {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin-bottom: 0.5rem;
+
+              .metric-label {
+                color: #94a3b8;
+                font-size: 0.9rem;
+                font-weight: 600;
+              }
+
+              .metric-value {
+                color: #f1f5f9;
+                font-size: 1.1rem;
+                font-weight: 700;
+              }
+            }
+
+            .metric-progress {
+              height: 6px;
+              background: rgba(255, 255, 255, 0.1);
+              border-radius: 10px;
+              overflow: hidden;
+
+              .progress-bar {
+                height: 100%;
+                background: linear-gradient(135deg, #a78bfa, #8b5cf6);
+                border-radius: 10px;
+                transition: width 1s ease-in-out;
+              }
+            }
+          }
+        }
+
+        .intel-summary {
+          margin-top: 1.5rem;
+          padding: 1rem;
+          background: rgba(16, 185, 129, 0.1);
+          border: 1px solid rgba(16, 185, 129, 0.3);
+          border-radius: 10px;
+          text-align: center;
+
+          .summary-text {
+            font-size: 1rem;
+            font-weight: 800;
+            color: #10b981;
+            display: block;
+            margin-bottom: 0.25rem;
+          }
+
+          .summary-subtext {
+            font-size: 0.8rem;
+            color: #94a3b8;
+          }
+        }
+      }
+    }
+  }
+
+  // Loading State
+  .loading-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6rem 2rem;
+
+    .loading-animation {
+      text-align: center;
+
+      .chart-loader {
+        width: 80px;
+        height: 80px;
+        border: 4px solid rgba(96, 165, 250, 0.3);
+        border-top: 4px solid #60a5fa;
+        border-radius: 50%;
+        animation: spin 1.5s linear infinite;
+        margin: 0 auto 2rem;
+      }
+
+      .loading-text {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #f1f5f9;
+        margin-bottom: 0.5rem;
+
+        .loading-icon {
+          margin-right: 0.5rem;
+          animation: bounce 2s infinite;
+        }
+      }
+
+      .loading-subtext {
+        color: #94a3b8;
+        font-size: 1rem;
+      }
+    }
+  }
+}
+
+// Legendary Animations
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.05); }
+}
+
+// Responsive Design
+@media (max-width: 1200px) {
+  .legendary-analytics {
+    padding: 1rem;
+
+    .analytics-header .header-content {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .charts-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .metrics-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .legendary-analytics {
+    .header-stats {
+      justify-content: center;
+    }
+
+    .section-header {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .time-selector {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .section-actions {
+      justify-content: center;
+    }
+  }
+}
+
+// Professional Chart Legends
+.chart-legend {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    color: #94a3b8;
+
+    .legend-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+    }
+  }
+}
+
+// Data Quality Indicators
+.data-quality {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 8px;
+
+  .quality-icon {
+    color: #10b981;
+    font-size: 1.2rem;
+  }
+
+  .quality-text {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #10b981;
+  }
+}
