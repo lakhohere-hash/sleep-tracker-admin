@@ -1,0 +1,781 @@
+<!-- PROFESSIONAL SETTINGS MANAGEMENT -->
+<div class="professional-settings">
+  <!-- Professional Header -->
+  <header class="settings-header">
+    <div class="header-content">
+      <div class="title-section">
+        <h1 class="page-title">
+          <i class="icon-settings">⚙️</i>
+          System Settings
+          <span class="pro-badge">Enterprise</span>
+        </h1>
+        <p class="page-subtitle">Configure your application and manage system preferences</p>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="header-actions">
+        <button class="quick-action-btn save-btn" (click)="saveSettings()">
+          <i class="icon-save">💾</i>
+          Save All
+        </button>
+        <button class="quick-action-btn export-btn" (click)="exportSettings()">
+          <i class="icon-export">📤</i>
+          Export
+        </button>
+        <button class="quick-action-btn import-btn" (click)="openImportModal()">
+          <i class="icon-import">📥</i>
+          Import
+        </button>
+        <button class="quick-action-btn god-mode-btn" (click)="enableGodMode()">
+          <i class="icon-god-mode">👑</i>
+          God Mode
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Settings Navigation -->
+  <nav class="settings-navigation">
+    <div class="nav-container">
+      <button *ngFor="let section of settingSections" 
+              class="nav-btn"
+              [class.active]="activeSection === section.id"
+              (click)="activeSection = section.id">
+        <i class="nav-icon">{{ section.icon }}</i>
+        <span class="nav-title">{{ section.title }}</span>
+        <span class="nav-description">{{ section.description }}</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Settings Content -->
+  <div class="settings-content" *ngIf="!isLoading; else loadingTemplate">
+    
+    <!-- General Settings -->
+    <section class="settings-section" *ngIf="activeSection === 'general'">
+      <div class="section-header">
+        <h2>General Settings</h2>
+        <p>Basic application configuration and preferences</p>
+      </div>
+
+      <div class="settings-form">
+        <div class="form-group">
+          <h3>Application Information</h3>
+          <div class="form-row">
+            <div class="form-field">
+              <label class="form-label">App Name</label>
+              <input type="text" [(ngModel)]="generalSettings.appName" class="form-input">
+            </div>
+            <div class="form-field">
+              <label class="form-label">Company Name</label>
+              <input type="text" [(ngModel)]="generalSettings.companyName" class="form-input">
+            </div>
+          </div>
+          <div class="form-field">
+            <label class="form-label">Support Email</label>
+            <input type="email" [(ngModel)]="generalSettings.supportEmail" class="form-input">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <h3>Regional Settings</h3>
+          <div class="form-row">
+            <div class="form-field">
+              <label class="form-label">Timezone</label>
+              <select [(ngModel)]="generalSettings.timezone" class="form-select">
+                <option value="UTC-5">UTC-5 (Eastern)</option>
+                <option value="UTC-6">UTC-6 (Central)</option>
+                <option value="UTC-7">UTC-7 (Mountain)</option>
+                <option value="UTC-8">UTC-8 (Pacific)</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label class="form-label">Date Format</label>
+              <select [(ngModel)]="generalSettings.dateFormat" class="form-select">
+                <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+                <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label class="form-label">Currency</label>
+              <select [(ngModel)]="generalSettings.currency" class="form-select">
+                <option value="USD">USD ($)</option>
+                <option value="EUR">EUR (€)</option>
+                <option value="GBP">GBP (£)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <h3>System Features</h3>
+          <div class="toggle-grid">
+            <div class="toggle-item">
+              <div class="toggle-content">
+                <span class="toggle-label">Maintenance Mode</span>
+                <span class="toggle-description">Put the application in maintenance mode</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" [(ngModel)]="generalSettings.maintenanceMode">
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="toggle-item">
+              <div class="toggle-content">
+                <span class="toggle-label">Enable Analytics</span>
+                <span class="toggle-description">Collect usage analytics and metrics</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" [(ngModel)]="generalSettings.enableAnalytics">
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="toggle-item">
+              <div class="toggle-content">
+                <span class="toggle-label">Enable Notifications</span>
+                <span class="toggle-description">Allow system notifications</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" [(ngModel)]="generalSettings.enableNotifications">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Security Settings -->
+    <section class="settings-section" *ngIf="activeSection === 'security'">
+      <div class="section-header">
+        <h2>Security & Privacy</h2>
+        <p>Security protocols and privacy controls</p>
+        <button class="section-action-btn" (click)="runSecurityScan()">
+          <i class="icon-scan">🔍</i>
+          Run Security Scan
+        </button>
+      </div>
+
+      <div class="security-grid">
+        <div *ngFor="let setting of securitySettings" class="security-card">
+          <div class="security-header">
+            <h3>{{ setting.name }}</h3>
+            <span class="critical-badge" *ngIf="setting.critical">CRITICAL</span>
+          </div>
+          <p class="security-description">{{ setting.description }}</p>
+          <div class="security-footer">
+            <span class="last-updated">Updated: {{ setting.lastUpdated }}</span>
+            <label class="toggle-switch">
+              <input type="checkbox" [checked]="setting.enabled" (change)="toggleSecuritySetting(setting)">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Payment Settings -->
+    <section class="settings-section" *ngIf="activeSection === 'payments'">
+      <div class="section-header">
+        <h2>Payment Processing</h2>
+        <p>Payment gateway and billing configuration</p>
+        <button class="section-action-btn" (click)="testPaymentGateway()">
+          <i class="icon-test">🧪</i>
+          Test Payment Gateway
+        </button>
+      </div>
+
+      <div class="settings-form">
+        <div class="form-group">
+          <h3>Payment Gateways</h3>
+          <div class="toggle-grid">
+            <div class="toggle-item">
+              <div class="toggle-content">
+                <span class="toggle-label">Stripe Payments</span>
+                <span class="toggle-description">Process credit card payments</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" [(ngModel)]="paymentSettings.stripeEnabled">
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="toggle-item">
+              <div class="toggle-content">
+                <span class="toggle-label">PayPal</span>
+                <span class="toggle-description">Accept PayPal payments</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" [(ngModel)]="paymentSettings.paypalEnabled">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <h3>Billing Settings</h3>
+          <div class="form-row">
+            <div class="form-field">
+              <label class="form-label">Tax Rate (%)</label>
+              <input type="number" [(ngModel)]="paymentSettings.taxRate" step="0.01" min="0" max="1" class="form-input">
+            </div>
+            <div class="form-field">
+              <label class="form-label">Late Fee Amount ($)</label>
+              <input type="number" [(ngModel)]="paymentSettings.lateFeeAmount" min="0" class="form-input">
+            </div>
+            <div class="form-field">
+              <label class="form-label">Grace Period (Days)</label>
+              <input type="number" [(ngModel)]="paymentSettings.gracePeriod" min="0" class="form-input">
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Notification Settings -->
+    <section class="settings-section" *ngIf="activeSection === 'notifications'">
+      <div class="section-header">
+        <h2>Notifications</h2>
+        <p>Communication and alert preferences</p>
+        <button class="section-action-btn" (click)="testNotifications()">
+          <i class="icon-test">🧪</i>
+          Test Notifications
+        </button>
+      </div>
+
+      <div class="settings-form">
+        <div class="form-group">
+          <h3>Notification Channels</h3>
+          <div class="toggle-grid">
+            <div class="toggle-item">
+              <div class="toggle-content">
+                <span class="toggle-label">Email Notifications</span>
+                <span class="toggle-description">Send notifications via email</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" [(ngModel)]="notificationSettings.emailEnabled">
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="toggle-item">
+              <div class="toggle-content">
+                <span class="toggle-label">Push Notifications</span>
+                <span class="toggle-description">Send push notifications to devices</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" [(ngModel)]="notificationSettings.pushEnabled">
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="toggle-item">
+              <div class="toggle-content">
+                <span class="toggle-label">SMS Notifications</span>
+                <span class="toggle-description">Send text message notifications</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" [(ngModel)]="notificationSettings.smsEnabled">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <h3>Notification Types</h3>
+          <div class="toggle-grid">
+            <div class="toggle-item">
+              <div class="toggle-content">
+                <span class="toggle-label">Marketing Emails</span>
+                <span class="toggle-description">Receive promotional emails</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" [(ngModel)]="notificationSettings.marketingEmails">
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="toggle-item">
+              <div class="toggle-content">
+                <span class="toggle-label">Security Alerts</span>
+                <span class="toggle-description">Get alerts for security events</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" [(ngModel)]="notificationSettings.securityAlerts">
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="toggle-item">
+              <div class="toggle-content">
+                <span class="toggle-label">Billing Reminders</span>
+                <span class="toggle-description">Receive payment reminders</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" [(ngModel)]="notificationSettings.billingReminders">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Integrations Settings -->
+    <section class="settings-section" *ngIf="activeSection === 'integrations'">
+      <div class="section-header">
+        <h2>Integrations</h2>
+        <p>Third-party services and API connections</p>
+      </div>
+
+      <div class="integrations-grid">
+        <div *ngFor="let integration of integrations" class="integration-card">
+          <div class="integration-header">
+            <div class="integration-info">
+              <i class="integration-icon">{{ integration.icon }}</i>
+              <div>
+                <h3>{{ integration.name }}</h3>
+                <p>{{ integration.description }}</p>
+              </div>
+            </div>
+            <span class="integration-status" [style.background]="getIntegrationStatusColor(integration.status)">
+              {{ integration.status }}
+            </span>
+          </div>
+          <div class="integration-footer">
+            <span class="last-sync">Last Sync: {{ integration.lastSync }}</span>
+            <div class="integration-actions">
+              <button class="action-btn test-btn" (click)="testIntegration(integration)">
+                <i class="icon-test">🧪</i>
+                Test
+              </button>
+              <label class="toggle-switch">
+                <input type="checkbox" [checked]="integration.connected" (change)="toggleIntegration(integration)">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Backup Settings -->
+    <section class="settings-section" *ngIf="activeSection === 'backup'">
+      <div class="section-header">
+        <h2>Backup & Recovery</h2>
+        <p>Data backup and disaster recovery</p>
+        <button class="section-action-btn" (click)="createBackup()">
+          <i class="icon-backup">💾</i>
+          Create Backup
+        </button>
+      </div>
+
+      <div class="backup-content">
+        <div class="backup-stats">
+          <div class="stat-card">
+            <div class="stat-value">{{ backups.length }}</div>
+            <div class="stat-label">Total Backups</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">{{ getCompletedBackupsCount() }}</div>
+            <div class="stat-label">Successful</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">{{ getTotalStorageUsed() }}</div>
+            <div class="stat-label">Storage Used</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">99.9%</div>
+            <div class="stat-label">Success Rate</div>
+          </div>
+        </div>
+
+        <div class="backup-list">
+          <h3>Recent Backups</h3>
+          <div class="table-wrapper">
+            <table class="backup-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Date</th>
+                  <th>Size</th>
+                  <th>Type</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let backup of backups" class="backup-row">
+                  <td class="backup-name">{{ backup.name }}</td>
+                  <td class="backup-date">{{ backup.date }}</td>
+                  <td class="backup-size">{{ backup.size }}</td>
+                  <td class="backup-type">
+                    <span class="type-badge" [class.auto]="backup.type === 'auto'" [class.manual]="backup.type === 'manual'">
+                      {{ backup.type }}
+                    </span>
+                  </td>
+                  <td class="backup-status">
+                    <span class="status-badge" [style.background]="getBackupStatusColor(backup.status)">
+                      {{ backup.status }}
+                    </span>
+                  </td>
+                  <td class="backup-actions">
+                    <button class="btn-action restore-btn" (click)="restoreBackup(backup)">
+                      <i class="icon-restore">🔄</i>
+                      Restore
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Advanced Settings -->
+    <section class="settings-section" *ngIf="activeSection === 'advanced'">
+      <div class="section-header">
+        <h2>Advanced Settings</h2>
+        <p>Advanced system configuration</p>
+        <button class="section-action-btn" (click)="optimizePerformance()">
+          <i class="icon-optimize">⚡</i>
+          Optimize Performance
+        </button>
+      </div>
+
+      <div class="settings-form">
+        <div class="form-group">
+          <h3>Performance</h3>
+          <div class="toggle-grid">
+            <div class="toggle-item">
+              <div class="toggle-content">
+                <span class="toggle-label">Enable Caching</span>
+                <span class="toggle-description">Cache frequently accessed data</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" [(ngModel)]="advancedSettings.cacheEnabled">
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="toggle-item">
+              <div class="toggle-content">
+                <span class="toggle-label">CDN Enabled</span>
+                <span class="toggle-description">Use content delivery network</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" [(ngModel)]="advancedSettings.cdnEnabled">
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="toggle-item">
+              <div class="toggle-content">
+                <span class="toggle-label">Compression</span>
+                <span class="toggle-description">Compress responses for faster loading</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" [(ngModel)]="advancedSettings.compressionEnabled">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <h3>System Configuration</h3>
+          <div class="form-row">
+            <div class="form-field">
+              <label class="form-label">Logging Level</label>
+              <select [(ngModel)]="advancedSettings.loggingLevel" class="form-select">
+                <option value="debug">Debug</option>
+                <option value="info">Info</option>
+                <option value="warn">Warn</option>
+                <option value="error">Error</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label class="form-label">API Rate Limit</label>
+              <input type="number" [(ngModel)]="advancedSettings.apiRateLimit" class="form-input">
+            </div>
+            <div class="form-field">
+              <label class="form-label">Session Timeout (min)</label>
+              <input type="number" [(ngModel)]="advancedSettings.sessionTimeout" class="form-input">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <h3>Data Management</h3>
+          <div class="form-row">
+            <div class="form-field">
+              <label class="form-label">Backup Frequency</label>
+              <select [(ngModel)]="advancedSettings.backupFrequency" class="form-select">
+                <option value="hourly">Hourly</option>
+                <option value="daily">Daily</option>
+                <option value="weekly">Weekly</option>
+                <option value="monthly">Monthly</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label class="form-label">Data Retention (days)</label>
+              <input type="number" [(ngModel)]="advancedSettings.dataRetention" class="form-input">
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Loading State -->
+  <ng-template #loadingTemplate>
+    <div class="loading-container">
+      <div class="loading-spinner"></div>
+      <div class="loading-content">
+        <h3>Loading Settings</h3>
+        <p>Please wait while we load your configuration...</p>
+      </div>
+    </div>
+  </ng-template>
+
+  <!-- Footer Actions -->
+  <footer class="settings-footer">
+    <div class="footer-actions">
+      <button class="btn-secondary" (click)="resetToDefaults()">
+        <i class="icon-reset">🔄</i>
+        Reset Defaults
+      </button>
+      <button class="btn-primary" (click)="saveSettings()">
+        <i class="icon-save">💾</i>
+        Save All Changes
+      </button>
+      <button class="btn-secondary" (click)="showSystemHealth()">
+        <i class="icon-health">🏥</i>
+        System Health
+      </button>
+    </div>
+  </footer>
+
+  <!-- Save Settings Modal -->
+  <div *ngIf="showSaveModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Save Settings</h3>
+        <button class="modal-close" (click)="closeSaveModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to save all settings changes?</p>
+        <div class="modal-actions">
+          <button class="btn-secondary" (click)="closeSaveModal()">Cancel</button>
+          <button class="btn-primary" (click)="confirmSave()">Save Changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Export Settings Modal -->
+  <div *ngIf="showExportModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Export Settings</h3>
+        <button class="modal-close" (click)="closeExportModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <p>Export your current settings configuration as a JSON file.</p>
+        <div class="export-options">
+          <div class="option-group">
+            <h4>Include Data</h4>
+            <div class="checkbox-options">
+              <label class="checkbox-label">
+                <input type="checkbox" checked>
+                <span class="checkmark"></span>
+                General Settings
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" checked>
+                <span class="checkmark"></span>
+                Payment Settings
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" checked>
+                <span class="checkmark"></span>
+                Notification Settings
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox">
+                <span class="checkmark"></span>
+                Security Settings
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="btn-secondary" (click)="closeExportModal()">Cancel</button>
+          <button class="btn-primary" (click)="confirmExport()">Export Settings</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Import Settings Modal -->
+  <div *ngIf="showImportModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Import Settings</h3>
+        <button class="modal-close" (click)="closeImportModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <p>Import settings from a previously exported JSON file.</p>
+        <div class="file-upload">
+          <input type="file" (change)="onFileSelected($event)" accept=".json" class="file-input">
+          <div class="upload-area" [class.has-file]="importFile">
+            <i class="icon-upload">📤</i>
+            <span class="upload-text" *ngIf="!importFile">Choose settings file</span>
+            <span class="file-name" *ngIf="importFile">{{ importFile.name }}</span>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="btn-secondary" (click)="closeImportModal()">Cancel</button>
+          <button class="btn-primary" (click)="importSettings()" [disabled]="!importFile">
+            Import Settings
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Security Scan Modal -->
+  <div *ngIf="showSecurityScanModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Security Scan</h3>
+        <button class="modal-close" (click)="closeSecurityScanModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <p>Running comprehensive security scan of your system configuration...</p>
+        <div class="scan-progress">
+          <div class="progress-bar">
+            <div class="progress-fill"></div>
+          </div>
+          <div class="scan-steps">
+            <div class="scan-step completed">
+              <i class="icon-check">✅</i>
+              System Integrity
+            </div>
+            <div class="scan-step completed">
+              <i class="icon-check">✅</i>
+              Security Settings
+            </div>
+            <div class="scan-step active">
+              <i class="icon-scan">🔍</i>
+              Vulnerability Check
+            </div>
+            <div class="scan-step">
+              <i class="icon-pending">⏳</i>
+              Final Report
+            </div>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="btn-secondary" (click)="closeSecurityScanModal()">Cancel</button>
+          <button class="btn-primary" (click)="confirmSecurityScan()">Run Scan</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Backup Modal -->
+  <div *ngIf="showBackupModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Create Backup</h3>
+        <button class="modal-close" (click)="closeBackupModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <p>Create a new backup of your system data and configuration.</p>
+        <div class="backup-options">
+          <div class="option-group">
+            <h4>Backup Type</h4>
+            <div class="radio-options">
+              <label class="radio-label">
+                <input type="radio" name="backupType" value="full" checked>
+                <span class="radio-checkmark"></span>
+                Full System Backup
+              </label>
+              <label class="radio-label">
+                <input type="radio" name="backupType" value="database">
+                <span class="radio-checkmark"></span>
+                Database Only
+              </label>
+              <label class="radio-label">
+                <input type="radio" name="backupType" value="config">
+                <span class="radio-checkmark"></span>
+                Configuration Only
+              </label>
+            </div>
+          </div>
+          <div class="option-group">
+            <h4>Backup Options</h4>
+            <div class="checkbox-options">
+              <label class="checkbox-label">
+                <input type="checkbox" checked>
+                <span class="checkmark"></span>
+                Compress Backup
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox">
+                <span class="checkmark"></span>
+                Encrypt Backup
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" checked>
+                <span class="checkmark"></span>
+                Include User Data
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="btn-secondary" (click)="closeBackupModal()">Cancel</button>
+          <button class="btn-primary" (click)="confirmBackup()">Create Backup</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Restore Modal -->
+  <div *ngIf="showRestoreModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Restore Backup</h3>
+        <button class="modal-close" (click)="closeRestoreModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to restore from this backup?</p>
+        <div class="backup-details" *ngIf="selectedBackup">
+          <div class="detail-item">
+            <span class="detail-label">Backup Name:</span>
+            <span class="detail-value">{{ selectedBackup.name }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Date:</span>
+            <span class="detail-value">{{ selectedBackup.date }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Size:</span>
+            <span class="detail-value">{{ selectedBackup.size }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Type:</span>
+            <span class="detail-value">{{ selectedBackup.type }}</span>
+          </div>
+        </div>
+        <div class="warning-message">
+          <i class="icon-warning">⚠️</i>
+          This action will overwrite your current system configuration and data.
+        </div>
+        <div class="modal-actions">
+          <button class="btn-secondary" (click)="closeRestoreModal()">Cancel</button>
+          <button class="btn-primary" (click)="confirmRestore()">Restore Backup</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

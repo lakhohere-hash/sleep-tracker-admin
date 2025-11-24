@@ -1,0 +1,359 @@
+<!-- PROFESSIONAL SOUND LIBRARY -->
+<div class="professional-sounds">
+  <!-- Professional Header -->
+  <header class="sounds-header">
+    <div class="header-content">
+      <div class="title-section">
+        <h1 class="page-title">
+          <i class="icon-music"></i>
+          Sound Library
+          <span class="pro-badge">Admin</span>
+        </h1>
+        <p class="page-subtitle">Manage premium sounds and audio content</p>
+      </div>
+
+      <!-- Professional Stats -->
+      <div class="header-stats">
+        <div class="stat-card">
+          <div class="stat-icon-container">
+            <i class="icon-sounds"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-number">{{ getTotalSoundsCount() }}</div>
+            <div class="stat-label">Total Sounds</div>
+            <div class="stat-trend positive">+15 this week</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon-container">
+            <i class="icon-premium"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-number">{{ getPremiumSoundsCount() }}</div>
+            <div class="stat-label">Premium Sounds</div>
+            <div class="stat-trend">Exclusive content</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon-container">
+            <i class="icon-plays"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-number">{{ getTotalPlays() | number }}</div>
+            <div class="stat-label">Total Plays</div>
+            <div class="stat-trend positive">2.4M+ this month</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon-container">
+            <i class="icon-revenue"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-number">${{ calculateSoundRevenue() | number }}</div>
+            <div class="stat-label">Sound Revenue</div>
+            <div class="stat-trend positive">+28% growth</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Control Panel -->
+  <section class="control-panel">
+    <div class="panel-header">
+      <h2 class="panel-title">Sound Management</h2>
+      <div class="panel-actions">
+        <button class="btn-primary" (click)="openUploadModal()">
+          <i class="icon-upload"></i>
+          Upload Sound
+        </button>
+        <button class="btn-secondary" (click)="loadSounds()">
+          <i class="icon-refresh"></i>
+          Refresh
+        </button>
+      </div>
+    </div>
+
+    <div class="filters-section">
+      <div class="search-container">
+        <div class="search-box">
+          <i class="icon-search"></i>
+          <input
+            type="text"
+            [(ngModel)]="searchTerm"
+            (input)="applyFilters()"
+            placeholder="Search sounds by name, description, or tags..."
+            class="search-input"
+          >
+        </div>
+      </div>
+
+      <div class="filter-controls">
+        <div class="filter-group">
+          <label class="filter-label">Category</label>
+          <select [(ngModel)]="selectedCategory" (change)="applyFilters()" class="filter-select">
+            <option value="all">All Categories</option>
+            <option value="nature">Nature</option>
+            <option value="ambient">Ambient</option>
+            <option value="white-noise">White Noise</option>
+            <option value="meditation">Meditation</option>
+            <option value="urban">Urban</option>
+            <option value="binaural">Binaural</option>
+            <option value="asmr">ASMR</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label class="filter-label">Tier</label>
+          <select [(ngModel)]="selectedPremium" (change)="applyFilters()" class="filter-select">
+            <option value="all">All Tiers</option>
+            <option value="premium">Premium Only</option>
+            <option value="free">Free Sounds</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results Info -->
+    <div class="results-info">
+      <span class="results-count">{{ filteredSounds.length }} sounds found</span>
+      <span class="results-stats">Total Audio: {{ getTotalDuration() }} • Avg Quality: {{ getAverageQuality() }}%</span>
+    </div>
+  </section>
+
+  <!-- Sounds Grid -->
+  <section class="sounds-grid-section" *ngIf="!isLoading; else loadingTemplate">
+    <div class="sounds-grid">
+      <div *ngFor="let sound of getPaginatedSounds()" class="sound-card" [class.premium]="sound.premium">
+        <!-- Sound Header -->
+        <div class="sound-header">
+          <div class="sound-badges">
+            <span [class]="'category-badge ' + getCategoryBadgeClass(sound.category)">
+              {{ getCategoryDisplayName(sound.category) }}
+            </span>
+            <span [class]="'premium-badge ' + getPremiumBadgeClass(sound.premium)">
+              {{ sound.premium ? 'Premium' : 'Free' }}
+            </span>
+            <span *ngIf="sound.featured" class="featured-badge">
+              Featured
+            </span>
+          </div>
+          
+          <div class="sound-actions">
+            <button class="btn-action btn-preview" (click)="previewSound(sound)" title="Preview Sound">
+              <i class="icon-preview"></i>
+            </button>
+            <button class="btn-action btn-edit" (click)="editSound(sound)" title="Edit Sound">
+              <i class="icon-edit"></i>
+            </button>
+            <button class="btn-action btn-more" (click)="showMoreActions(sound)" title="More Actions">
+              <i class="icon-more"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Sound Content -->
+        <div class="sound-content">
+          <h3 class="sound-name">{{ sound.name }}</h3>
+          <p class="sound-description">{{ sound.description || 'Professionally mastered audio content' }}</p>
+          
+          <div class="sound-meta">
+            <div class="meta-item">
+              <i class="icon-duration"></i>
+              <span class="meta-text">{{ sound.duration }}</span>
+            </div>
+            <div class="meta-item">
+              <i class="icon-size"></i>
+              <span class="meta-text">{{ sound.fileSize }}</span>
+            </div>
+            <div class="meta-item">
+              <i class="icon-bitrate"></i>
+              <span class="meta-text">{{ sound.bitrate }}</span>
+            </div>
+            <div class="meta-item">
+              <i class="icon-quality"></i>
+              <span class="meta-text">{{ sound.quality }}% quality</span>
+            </div>
+          </div>
+
+          <!-- Audio Visualization -->
+          <div class="audio-visualization">
+            <div class="waveform">
+              <div *ngFor="let bar of generateWaveform()" 
+                   class="wave-bar" 
+                   [style.height]="bar + '%'">
+              </div>
+            </div>
+            <div class="audio-controls">
+              <button class="control-btn play-btn" (click)="togglePlay(sound)">
+                {{ isPlaying(sound) ? '⏸️' : '▶️' }}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sound Stats -->
+        <div class="sound-stats">
+          <div class="stat-item">
+            <i class="icon-plays-small"></i>
+            <span class="stat-value">{{ sound.plays | number }}</span>
+            <span class="stat-label">Plays</span>
+          </div>
+          <div class="stat-item">
+            <i class="icon-rating"></i>
+            <span class="stat-value">{{ sound.rating }}/5</span>
+            <span class="stat-label">Rating</span>
+          </div>
+          <div class="stat-item">
+            <i class="icon-downloads"></i>
+            <span class="stat-value">{{ sound.downloads | number }}</span>
+            <span class="stat-label">Downloads</span>
+          </div>
+        </div>
+
+        <!-- Sound Footer -->
+        <div class="sound-footer">
+          <div class="sound-info">
+            <div class="upload-info">
+              <span class="upload-date">Added {{ sound.uploadDate }}</span>
+              <span class="uploader">by {{ sound.uploader || 'Audio Master' }}</span>
+            </div>
+            <div class="sound-tags">
+              <span *ngFor="let tag of sound.tags" class="sound-tag">
+                #{{ tag }}
+              </span>
+            </div>
+          </div>
+          
+          <div class="sound-management">
+            <button *ngIf="!sound.premium" class="btn-upgrade" (click)="upgradeToPremium(sound)">
+              Upgrade to Premium
+            </button>
+            <button class="btn-analytics" (click)="showSoundAnalytics(sound)">
+              Analytics
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-container" *ngIf="filteredSounds.length > itemsPerPage">
+      <div class="pagination-info">
+        Showing {{ getCurrentPageStart() }}-{{ getCurrentPageEnd() }} of {{ filteredSounds.length }} sounds
+      </div>
+      
+      <div class="pagination-controls">
+        <button class="pagination-btn" [disabled]="currentPage === 1" (click)="goToPage(1)">
+          <i class="icon-first"></i>
+        </button>
+        <button class="pagination-btn" [disabled]="currentPage === 1" (click)="previousPage()">
+          <i class="icon-prev"></i>
+        </button>
+        
+        <div class="page-numbers">
+          <button 
+            *ngFor="let page of getVisiblePages()" 
+            [class.active]="page === currentPage"
+            (click)="goToPage(page)" 
+            [disabled]="page === -1"
+            class="page-btn">
+            {{ page === -1 ? '...' : page }}
+          </button>
+        </div>
+        
+        <button class="pagination-btn" [disabled]="currentPage === getTotalPages()" (click)="nextPage()">
+          <i class="icon-next"></i>
+        </button>
+        <button class="pagination-btn" [disabled]="currentPage === getTotalPages()" (click)="goToPage(getTotalPages())">
+          <i class="icon-last"></i>
+        </button>
+      </div>
+
+      <div class="page-size">
+        <select #pageSizeSelect (change)="changePageSize(pageSizeSelect.value)" class="page-size-select">
+          <option value="12">12 per page</option>
+          <option value="24">24 per page</option>
+          <option value="48">48 per page</option>
+        </select>
+      </div>
+    </div>
+  </section>
+
+  <!-- Loading State -->
+  <ng-template #loadingTemplate>
+    <div class="loading-container">
+      <div class="loading-spinner"></div>
+      <div class="loading-content">
+        <h3>Loading Sound Library</h3>
+        <p>Please wait while we load the audio content...</p>
+      </div>
+    </div>
+  </ng-template>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && filteredSounds.length === 0" class="empty-state">
+    <div class="empty-icon">
+      <i class="icon-music"></i>
+    </div>
+    <div class="empty-content">
+      <h3>No Sounds Found</h3>
+      <p>No sounds match your current search criteria. Try adjusting your filters or search terms.</p>
+      <button class="btn-primary" (click)="resetFilters()">
+        Clear All Filters
+      </button>
+    </div>
+  </div>
+
+  <!-- Upload Modal -->
+  <div *ngIf="showUploadModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Upload New Sound</h3>
+        <button class="modal-close" (click)="closeUploadModal()">×</button>
+      </div>
+      
+      <div class="modal-body">
+        <div class="upload-area" [class.dragover]="false">
+          <div class="upload-icon">
+            <i class="icon-upload-large"></i>
+          </div>
+          <h4>Select Audio File</h4>
+          <p>Supported formats: MP3, WAV, AAC, OGG (Max 100MB)</p>
+          
+          <input
+            type="file"
+            #fileInput
+            (change)="onFileSelected($event)"
+            accept="audio/*"
+            class="file-input"
+          >
+          <button class="btn-secondary" (click)="fileInput.click()">
+            Choose File
+          </button>
+          
+          <div *ngIf="selectedFile" class="file-info">
+            <div class="file-name">{{ selectedFile.name }}</div>
+            <div class="file-size">{{ formatFileSize(selectedFile.size) }}</div>
+          </div>
+        </div>
+        
+        <div *ngIf="isUploading" class="upload-progress">
+          <div class="progress-bar">
+            <div class="progress-fill" [style.width]="uploadProgress + '%'"></div>
+          </div>
+          <div class="progress-text">Uploading... {{ uploadProgress }}%</div>
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button class="btn-secondary" (click)="closeUploadModal()" [disabled]="isUploading">
+          Cancel
+        </button>
+        <button class="btn-primary" (click)="uploadSoundFile()" [disabled]="!selectedFile || isUploading">
+          Upload Sound
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

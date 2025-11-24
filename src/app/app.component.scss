@@ -1,0 +1,235 @@
+// LEGENDARY APP STYLES - ENTERPRISE-GRADE FOUNDATION
+.app-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  
+  // Smooth transitions for all routes
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.5s;
+  }
+}
+
+// Global Loading States
+.global-loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  backdrop-filter: blur(10px);
+  
+  .loading-content {
+    text-align: center;
+    color: #f8fafc;
+    
+    .loading-spinner {
+      width: 60px;
+      height: 60px;
+      border: 4px solid rgba(96, 165, 250, 0.3);
+      border-top: 4px solid #60a5fa;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1.5rem;
+    }
+    
+    .loading-text {
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+  }
+}
+
+// Global Error States
+.global-error {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(239, 68, 68, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9998;
+  backdrop-filter: blur(5px);
+  
+  .error-content {
+    background: rgba(15, 23, 42, 0.95);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 20px;
+    padding: 3rem;
+    text-align: center;
+    max-width: 500px;
+    
+    .error-icon {
+      font-size: 4rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .error-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #ef4444;
+      margin-bottom: 1rem;
+    }
+    
+    .error-message {
+      color: #94a3b8;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+    
+    .error-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+    }
+  }
+}
+
+// Route Transition Animations
+.route-transition {
+  &-enter {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  
+  &-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+    transition: all 0.3s ease;
+  }
+  
+  &-leave {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  &-leave-active {
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: all 0.3s ease;
+  }
+}
+
+// Legendary Animations
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideInRight {
+  from { 
+    opacity: 0;
+    transform: translateX(100px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from { 
+    opacity: 0;
+    transform: translateX(-100px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInUp {
+  from { 
+    opacity: 0;
+    transform: translateY(100px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounceIn {
+  0% { 
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% { 
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  70% { 
+    transform: scale(0.9);
+  }
+  100% { 
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes zoomIn {
+  from { 
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  to { 
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes flipInX {
+  from { 
+    opacity: 0;
+    transform: perspective(400px) rotateX(90deg);
+  }
+  to { 
+    opacity: 1;
+    transform: perspective(400px) rotateX(0deg);
+  }
+}
+
+@keyframes rotateIn {
+  from { 
+    opacity: 0;
+    transform: rotate(-180deg) scale(0.5);
+  }
+  to { 
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .app-container {
+    padding: 0;
+  }
+  
+  .global-error .error-content {
+    margin: 1rem;
+    padding: 2rem;
+  }
+}
+
+// Print Styles
+@media print {
+  .app-container {
+    background: white !important;
+    color: black !important;
+  }
+}

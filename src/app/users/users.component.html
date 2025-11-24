@@ -1,0 +1,270 @@
+<!-- PROFESSIONAL USER MANAGEMENT -->
+<div class="professional-users">
+  <!-- Professional Header -->
+  <header class="users-header">
+    <div class="header-content">
+      <div class="title-section">
+        <h1 class="page-title">
+          <i class="icon-users"></i>
+          User Management
+          <span class="pro-badge">Admin</span>
+        </h1>
+        <p class="page-subtitle">Manage users and subscriptions</p>
+      </div>
+
+      <!-- Professional Stats -->
+      <div class="header-stats">
+        <div class="stat-card">
+          <div class="stat-icon-container">
+            <i class="icon-user-group"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-number">{{ users.length }}</div>
+            <div class="stat-label">Total Users</div>
+            <div class="stat-trend positive">+12% this month</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon-container">
+            <i class="icon-premium"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-number">{{ getPremiumUsersCount() }}</div>
+            <div class="stat-label">Premium Users</div>
+            <div class="stat-trend positive">$2,977 MRR</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon-container">
+            <i class="icon-activity"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-number">{{ getActiveUsersCount() }}</div>
+            <div class="stat-label">Active Now</div>
+            <div class="stat-trend">89 sessions today</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Control Panel -->
+  <section class="control-panel">
+    <div class="panel-header">
+      <h2 class="panel-title">User Management</h2>
+      <div class="panel-actions">
+        <button class="btn-secondary" (click)="exportUsers()">
+          <i class="icon-download"></i>
+          Export Data
+        </button>
+        <button class="btn-primary" (click)="refreshUsers()">
+          <i class="icon-refresh"></i>
+          Refresh
+        </button>
+      </div>
+    </div>
+
+    <div class="filters-section">
+      <div class="search-container">
+        <div class="search-box">
+          <i class="icon-search"></i>
+          <input
+            type="text"
+            [(ngModel)]="searchTerm"
+            (input)="applyFilters()"
+            placeholder="Search users by name or email..."
+            class="search-input"
+          >
+        </div>
+      </div>
+
+      <div class="filter-controls">
+        <div class="filter-group">
+          <label class="filter-label">Subscription Plan</label>
+          <select [(ngModel)]="selectedSubscription" (change)="applyFilters()" class="filter-select">
+            <option value="all">All Plans</option>
+            <option value="free">Free Tier</option>
+            <option value="premium">Premium</option>
+            <option value="enterprise">Enterprise</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label class="filter-label">Status</label>
+          <select [(ngModel)]="selectedStatus" (change)="applyFilters()" class="filter-select">
+            <option value="all">All Status</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results Info -->
+    <div class="results-info">
+      <span class="results-count">{{ filteredUsers.length }} users found</span>
+      <span class="results-revenue">Monthly Revenue: ${{ calculateMonthlyRevenue() }}</span>
+    </div>
+  </section>
+
+  <!-- Users Table -->
+  <section class="users-table-section" *ngIf="!isLoading; else loadingTemplate">
+    <div class="table-wrapper">
+      <table class="users-table">
+        <thead>
+          <tr>
+            <th class="column-user">User Profile</th>
+            <th class="column-subscription">Subscription</th>
+            <th class="column-status">Status</th>
+            <th class="column-metrics">Sleep Metrics</th>
+            <th class="column-actions">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of getPaginatedUsers()" class="user-row">
+            <!-- User Profile -->
+            <td class="user-profile">
+              <div class="user-avatar" [style.background]="getUserColor(user.name)">
+                {{ user.name.charAt(0).toUpperCase() }}
+              </div>
+              <div class="user-info">
+                <div class="user-name">{{ user.name }}</div>
+                <div class="user-email">{{ user.email }}</div>
+                <div class="user-details">
+                  <span class="user-id">ID: {{ user._id.slice(-8) }}</span>
+                  <span class="user-joined">Joined: {{ formatDate(user.createdAt) }}</span>
+                </div>
+              </div>
+            </td>
+
+            <!-- Subscription -->
+            <td class="subscription-info">
+              <div [class]="'subscription-badge subscription-' + user.subscription">
+                <span class="subscription-name">{{ getSubscriptionDisplayName(user.subscription) }}</span>
+                <span class="subscription-price">{{ getSubscriptionPrice(user.subscription) }}</span>
+              </div>
+            </td>
+
+            <!-- Status -->
+            <td class="status-info">
+              <div class="status-container">
+                <span [class]="'status-indicator status-' + user.subscriptionStatus">
+                  {{ getStatusDisplayName(user.subscriptionStatus) }}
+                </span>
+                <div class="last-activity">
+                  Last active: {{ user.lastLogin ? formatLastLogin(user.lastLogin) : 'Never' }}
+                </div>
+              </div>
+            </td>
+
+            <!-- Sleep Metrics -->
+            <td class="metrics-info">
+              <div class="metrics-grid">
+                <div class="metric">
+                  <div class="metric-value">{{ user.sleepSessionsCount || 0 }}</div>
+                  <div class="metric-label">Sessions</div>
+                </div>
+                <div class="metric">
+                  <div class="metric-value">{{ (user.sleepSessionsCount || 0) * 7.5 }}h</div>
+                  <div class="metric-label">Total Hours</div>
+                </div>
+                <div class="metric">
+                  <div class="metric-value">{{ calculateAvgSleepQuality(user) }}%</div>
+                  <div class="metric-label">Quality</div>
+                </div>
+              </div>
+            </td>
+
+            <!-- Actions -->
+            <td class="actions-info">
+              <div class="actions-container">
+                <button class="btn-action btn-view" (click)="viewUser(user)" title="View Analytics">
+                  <i class="icon-analytics"></i>
+                </button>
+                <button class="btn-action btn-edit" (click)="editUser(user)" title="Edit User">
+                  <i class="icon-edit"></i>
+                </button>
+                <button class="btn-action btn-upgrade" *ngIf="user.subscription !== 'enterprise'"
+                  (click)="upgradeUser(user)" title="Upgrade Plan">
+                  <i class="icon-upgrade"></i>
+                </button>
+                <div class="dropdown">
+                  <button class="btn-action btn-more" title="More Actions">
+                    <i class="icon-more"></i>
+                  </button>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-container" *ngIf="filteredUsers.length > itemsPerPage">
+      <div class="pagination-info">
+        Showing {{ getCurrentPageStart() }}-{{ getCurrentPageEnd() }} of {{ filteredUsers.length }} users
+      </div>
+      
+      <div class="pagination-controls">
+        <button class="pagination-btn" [disabled]="currentPage === 1" (click)="goToPage(1)">
+          <i class="icon-first"></i>
+        </button>
+        <button class="pagination-btn" [disabled]="currentPage === 1" (click)="previousPage()">
+          <i class="icon-prev"></i>
+        </button>
+        
+        <div class="page-numbers">
+          <button 
+            *ngFor="let page of getVisiblePages()" 
+            [class.active]="page === currentPage"
+            (click)="goToPage(page)" 
+            [disabled]="page === -1"
+            class="page-btn">
+            {{ page === -1 ? '...' : page }}
+          </button>
+        </div>
+        
+        <button class="pagination-btn" [disabled]="currentPage === getTotalPages()" (click)="nextPage()">
+          <i class="icon-next"></i>
+        </button>
+        <button class="pagination-btn" [disabled]="currentPage === getTotalPages()" (click)="goToPage(getTotalPages())">
+          <i class="icon-last"></i>
+        </button>
+      </div>
+
+      <div class="page-size">
+        <select [(ngModel)]="itemsPerPage" (change)="changePageSize(itemsPerPage)" class="page-size-select">
+          <option value="10">10 per page</option>
+          <option value="25">25 per page</option>
+          <option value="50">50 per page</option>
+        </select>
+      </div>
+    </div>
+  </section>
+
+  <!-- Loading State -->
+  <ng-template #loadingTemplate>
+    <div class="loading-container">
+      <div class="loading-spinner"></div>
+      <div class="loading-content">
+        <h3>Loading User Database</h3>
+        <p>Please wait while we load the user information...</p>
+      </div>
+    </div>
+  </ng-template>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && filteredUsers.length === 0" class="empty-state">
+    <div class="empty-icon">
+      <i class="icon-search"></i>
+    </div>
+    <div class="empty-content">
+      <h3>No Users Found</h3>
+      <p>No users match your current search criteria. Try adjusting your filters or search terms.</p>
+      <button class="btn-primary" (click)="resetFilters()">
+        Clear All Filters
+      </button>
+    </div>
+  </div>
+</div>
