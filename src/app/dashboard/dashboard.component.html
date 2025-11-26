@@ -1,0 +1,281 @@
+<!-- PROFESSIONAL SLEEP TRACKER ADMIN DASHBOARD -->
+<div class="professional-dashboard">
+  <!-- Professional Header -->
+  <header class="dashboard-header">
+    <div class="header-content">
+      <div class="brand-section">
+        <h1 class="brand-title">
+          <span class="brand-icon">💤</span>
+          SleepTracker <span class="pro-badge">Admin</span>
+        </h1>
+        <p class="brand-tagline">Enterprise Sleep Analytics Platform</p>
+      </div>
+      
+      <div class="admin-controls">
+        <div class="admin-info">
+          <div class="admin-details">
+            <span class="admin-name">{{ currentAdmin?.name || 'Administrator' }}</span>
+            <span class="admin-role">System Administrator</span>
+          </div>
+        </div>
+        
+        <div class="control-actions">
+          <button class="control-btn refresh-btn" (click)="refreshData()" [disabled]="isLoading">
+            {{ isLoading ? 'Loading...' : 'Refresh Data' }}
+          </button>
+          <button class="control-btn logout-btn" (click)="logout()">
+            Logout
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Error State -->
+  <div *ngIf="hasDataError" class="error-banner">
+    <div class="error-content">
+      <span class="error-icon">⚠️</span>
+      <span class="error-message">Using demo data. API connection unavailable.</span>
+      <button class="error-action" (click)="refreshData()">Retry</button>
+    </div>
+  </div>
+
+  <!-- Business Performance Metrics -->
+  <section class="stats-section" *ngIf="!isLoading; else loadingTemplate">
+    <div class="section-header">
+      <h2 class="section-title">Business Performance Metrics</h2>
+      <div class="section-actions">
+        <button class="action-btn refresh-btn" (click)="refreshData()">
+          Refresh
+        </button>
+        <button class="action-btn export-btn" (click)="exportDashboardData()">
+          Export Reports
+        </button>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <!-- Users Card -->
+      <div class="stat-card users-card">
+        <div class="stat-header">
+          <div class="stat-icon">👥</div>
+          <div class="stat-trend success">+12%</div>
+        </div>
+        <div class="stat-content">
+          <h3 class="stat-title">TOTAL USERS</h3>
+          <p class="stat-number">{{ formatNumber(stats.totalUsers) }}</p>
+          <div class="stat-breakdown">
+            <span class="breakdown-item">{{ stats.premiumUsers }} Premium</span>
+            <span class="breakdown-item">{{ formatNumber(stats.mobileUsers) }} Mobile</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Revenue Card -->
+      <div class="stat-card revenue-card">
+        <div class="stat-header">
+          <div class="stat-icon">💰</div>
+          <div class="stat-trend success">+15%</div>
+        </div>
+        <div class="stat-content">
+          <h3 class="stat-title">MONTHLY REVENUE</h3>
+          <p class="stat-number">{{ formatCurrency(stats.monthlyRevenue) }}</p>
+          <div class="stat-breakdown">
+            <span class="breakdown-item">{{ stats.activeSubscriptions }} Subscriptions</span>
+            <span class="breakdown-item">{{ stats.giftCodesRedeemed }} Gift Codes</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sleep Sessions Card -->
+      <div class="stat-card sessions-card">
+        <div class="stat-header">
+          <div class="stat-icon">💤</div>
+          <div class="stat-trend success">+8%</div>
+        </div>
+        <div class="stat-content">
+          <h3 class="stat-title">SLEEP SESSIONS</h3>
+          <p class="stat-number">{{ formatNumber(stats.totalSleepSessions) }}</p>
+          <div class="stat-breakdown">
+            <span class="breakdown-item">{{ stats.todaySleepSessions }} Today</span>
+            <span class="breakdown-item">{{ formatNumber(stats.aiSessions) }} AI Powered</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Content Library Card -->
+      <div class="stat-card content-card">
+        <div class="stat-header">
+          <div class="stat-icon">🎵</div>
+          <div class="stat-trend success">+25%</div>
+        </div>
+        <div class="stat-content">
+          <h3 class="stat-title">PREMIUM CONTENT</h3>
+          <p class="stat-number">{{ formatNumber(stats.totalSounds) }}+</p>
+          <div class="stat-breakdown">
+            <span class="breakdown-item">12 Videos</span>
+            <span class="breakdown-item">{{ formatNumber(stats.pushNotifications) }} Notifications</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Management Actions -->
+  <section class="actions-section" *ngIf="!isLoading">
+    <div class="section-header">
+      <h2 class="section-title">Management Actions</h2>
+    </div>
+
+    <div class="actions-grid">
+      <!-- Users Management -->
+      <div class="action-card users-card" (click)="navigateToUsers()">
+        <div class="action-icon">👥</div>
+        <div class="action-content">
+          <h3>USER MANAGEMENT</h3>
+          <p>Manage {{ formatNumber(stats.totalUsers) }} active users</p>
+          <div class="action-stats">
+            <span class="stat">{{ stats.premiumUsers }} Premium</span>
+            <span class="stat">{{ formatNumber(stats.mobileUsers) }} Mobile</span>
+          </div>
+        </div>
+        <div class="action-badge success">Active</div>
+      </div>
+
+      <!-- Sound Library -->
+      <div class="action-card sounds-card" (click)="navigateToSounds()">
+        <div class="action-icon">🎵</div>
+        <div class="action-content">
+          <h3>SOUND LIBRARY</h3>
+          <p>{{ formatNumber(stats.totalSounds) }}+ premium sounds</p>
+          <div class="action-stats">
+            <span class="stat">260+ Categories</span>
+            <span class="stat">AI Enhanced</span>
+          </div>
+        </div>
+        <div class="action-badge success">Premium</div>
+      </div>
+
+      <!-- Subscriptions -->
+      <div class="action-card subscriptions-card" (click)="navigateToSubscriptions()">
+        <div class="action-icon">💎</div>
+        <div class="action-content">
+          <h3>SUBSCRIPTIONS</h3>
+          <p>{{ formatCurrency(stats.monthlyRevenue) }} monthly revenue</p>
+          <div class="action-stats">
+            <span class="stat">{{ stats.activeSubscriptions }} Active</span>
+            <span class="stat">28% Growth</span>
+          </div>
+        </div>
+        <div class="action-badge success">Growing</div>
+      </div>
+
+      <!-- Analytics -->
+      <div class="action-card analytics-card" (click)="navigateToAnalytics()">
+        <div class="action-icon">📈</div>
+        <div class="action-content">
+          <h3>BUSINESS ANALYTICS</h3>
+          <p>Real-time analytics & performance reports</p>
+          <div class="action-stats">
+            <span class="stat">AI Powered</span>
+            <span class="stat">50+ Metrics</span>
+          </div>
+        </div>
+        <div class="action-badge success">Insights</div>
+      </div>
+
+      <!-- Gift Codes -->
+      <div class="action-card giftcodes-card" (click)="navigateToGiftCodes()">
+        <div class="action-icon">🎁</div>
+        <div class="action-content">
+          <h3>GIFT CODES</h3>
+          <p>{{ stats.giftCodesRedeemed }} codes redeemed</p>
+          <div class="action-stats">
+            <span class="stat">Viral Growth</span>
+            <span class="stat">45% Conversion</span>
+          </div>
+        </div>
+        <div class="action-badge success">Popular</div>
+      </div>
+
+      <!-- Notifications -->
+      <div class="action-card notifications-card" (click)="navigateToNotifications()">
+        <div class="action-icon">🔔</div>
+        <div class="action-content">
+          <h3>NOTIFICATIONS</h3>
+          <p>{{ formatNumber(stats.pushNotifications) }} notifications sent</p>
+          <div class="action-stats">
+            <span class="stat">Push + Email</span>
+            <span class="stat">89% Open Rate</span>
+          </div>
+        </div>
+        <div class="action-badge success">Engaging</div>
+      </div>
+
+      <!-- Settings -->
+      <div class="action-card settings-card" (click)="navigateToSettings()">
+        <div class="action-icon">⚙️</div>
+        <div class="action-content">
+          <h3>SYSTEM SETTINGS</h3>
+          <p>Enterprise configuration & security</p>
+          <div class="action-stats">
+            <span class="stat">Advanced Security</span>
+            <span class="stat">Performance</span>
+          </div>
+        </div>
+        <div class="action-badge success">Secure</div>
+      </div>
+
+      <!-- AI Studio -->
+      <div class="action-card ai-card" (click)="navigateToAIStudio()">
+        <div class="action-icon">🤖</div>
+        <div class="action-content">
+          <h3>AI STUDIO</h3>
+          <p>{{ formatNumber(stats.aiSessions) }} AI sessions</p>
+          <div class="action-stats">
+            <span class="stat">ML Powered</span>
+            <span class="stat">Audio Analysis</span>
+          </div>
+        </div>
+        <div class="action-badge success">Advanced</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Recent Activity -->
+  <section class="activity-section" *ngIf="!isLoading">
+    <div class="section-header">
+      <h2 class="section-title">Recent Activities</h2>
+      <button class="refresh-btn" (click)="refreshData()">
+        Refresh
+      </button>
+    </div>
+
+    <div class="activity-list">
+      <div *ngFor="let activity of recentActivities" class="activity-item" [class]="'activity-' + activity.type">
+        <div class="activity-icon">{{ activity.icon }}</div>
+        <div class="activity-content">
+          <div class="activity-user">{{ activity.user }}</div>
+          <div class="activity-action">{{ activity.action }}</div>
+          <div class="activity-time">{{ activity.timestamp }}</div>
+        </div>
+        <div class="activity-badge" [class]="activity.type">
+          {{ activity.type }}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Loading State -->
+  <ng-template #loadingTemplate>
+    <div class="loading-state">
+      <div class="loading-animation">
+        <div class="professional-loader"></div>
+        <div class="loading-content">
+          <h3 class="loading-title">Loading Business Data</h3>
+          <p class="loading-text">Preparing comprehensive analytics and reports...</p>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</div>

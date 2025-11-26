@@ -1,0 +1,193 @@
+<!-- SLEEPTRACKER ENTERPRISE ADMIN PANEL -->
+<div class="app-container">
+  <!-- Global Loading State -->
+  <div *ngIf="isLoading" class="global-loading">
+    <div class="loading-content">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">Initializing Admin System...</div>
+    </div>
+  </div>
+
+  <!-- Main Layout -->
+  <div *ngIf="isAuthenticated && !isLoading" class="main-layout">
+    
+    <!-- Navigation Sidebar -->
+    <nav class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo-section">
+          <div class="logo-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" stroke="currentColor" stroke-width="2"/>
+              <polyline points="3.29 7 12 12 20.71 7" stroke="currentColor" stroke-width="2"/>
+              <line x1="12" y1="22" x2="12" y2="12" stroke="currentColor" stroke-width="2"/>
+            </svg>
+          </div>
+          <div class="logo-text">
+            <h2>SleepTracker</h2>
+            <span class="logo-subtitle">Enterprise</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-content">
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+          <button class="quick-action-btn" (click)="navigateToDashboard()" [class.active]="isActiveRoute('/dashboard')">
+            <i class="icon-dashboard"></i>
+            <span class="action-label">Dashboard</span>
+          </button>
+          <button class="quick-action-btn" (click)="navigateToAnalytics()" [class.active]="isActiveRoute('/analytics')">
+            <i class="icon-analytics"></i>
+            <span class="action-label">Analytics</span>
+          </button>
+        </div>
+
+        <!-- Main Navigation -->
+        <div class="navigation-section">
+          <h3 class="section-title">Management</h3>
+          <div class="nav-items">
+            <button 
+              *ngFor="let item of navigationItems" 
+              class="nav-item"
+              [class.active]="isActiveRoute(item.path)"
+              (click)="navigateTo(item.path)"
+              [title]="item.description">
+              <i [class]="'icon-' + item.id"></i>
+              <span class="nav-label">{{ item.title }}</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- System Section -->
+        <div class="navigation-section">
+          <h3 class="section-title">System</h3>
+          <div class="nav-items">
+            <button class="nav-item" (click)="navigateToSettings()" [class.active]="isActiveRoute('/settings')">
+              <i class="icon-settings"></i>
+              <span class="nav-label">Settings</span>
+            </button>
+            <button class="nav-item" (click)="navigateTo('/ai-studio')" [class.active]="isActiveRoute('/ai-studio')">
+              <i class="icon-ai"></i>
+              <span class="nav-label">AI Studio</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- User Section -->
+      <div class="sidebar-footer">
+        <div class="user-info">
+          <div class="user-avatar">
+            <span>AU</span>
+          </div>
+          <div class="user-details">
+            <div class="user-name">Admin User</div>
+            <div class="user-role">System Administrator</div>
+          </div>
+          <button class="logout-btn" title="Logout">
+            <i class="icon-logout"></i>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Top Header Bar -->
+      <header class="top-header">
+        <div class="header-left">
+          <!-- Mobile Menu Toggle -->
+          <button class="mobile-menu-toggle" (click)="toggleMobileMenu()">
+            <i class="icon-menu"></i>
+          </button>
+          
+          <!-- Breadcrumb Navigation -->
+          <nav *ngIf="currentBreadcrumb.length > 0" class="breadcrumb-nav">
+            <div class="breadcrumb-trail">
+              <span class="breadcrumb-item" *ngFor="let crumb of currentBreadcrumb; let last = last">
+                <span *ngIf="!last" class="breadcrumb-label" (click)="navigateTo(crumb.path)">{{ crumb.label }}</span>
+                <span *ngIf="last" class="breadcrumb-label current">{{ crumb.label }}</span>
+                <span *ngIf="!last" class="breadcrumb-separator">/</span>
+              </span>
+            </div>
+          </nav>
+        </div>
+
+        <div class="header-right">
+          <!-- User Actions -->
+          <div class="user-actions">
+            <button class="header-btn refresh-btn" title="Refresh Data">
+              <i class="icon-refresh"></i>
+            </button>
+            <div class="user-profile">
+              <span class="user-greeting">Welcome, Admin</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Page Content -->
+      <div class="page-content">
+        <router-outlet></router-outlet>
+      </div>
+    </main>
+  </div>
+
+  <!-- Login/Public Pages -->
+  <main *ngIf="!isAuthenticated" class="public-content">
+    <router-outlet></router-outlet>
+  </main>
+
+  <!-- Mobile Menu Overlay -->
+  <div *ngIf="showMobileMenu" class="mobile-overlay" (click)="toggleMobileMenu()">
+    <div class="mobile-sidebar" (click)="$event.stopPropagation()">
+      <div class="mobile-nav-content">
+        <div class="mobile-header">
+          <div class="logo-section">
+            <div class="logo-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" stroke="currentColor" stroke-width="2"/>
+              </svg>
+            </div>
+            <div class="logo-text">
+              <h2>SleepTracker</h2>
+              <span class="logo-subtitle">Enterprise</span>
+            </div>
+          </div>
+          <button class="close-mobile-menu" (click)="toggleMobileMenu()">
+            <i class="icon-close"></i>
+          </button>
+        </div>
+        
+        <div class="mobile-nav-items">
+          <button class="mobile-nav-item" (click)="navigateToDashboard(); toggleMobileMenu()" [class.active]="isActiveRoute('/dashboard')">
+            <i class="icon-dashboard"></i>
+            <span class="nav-label">Dashboard</span>
+          </button>
+          <button class="mobile-nav-item" (click)="navigateToAnalytics(); toggleMobileMenu()" [class.active]="isActiveRoute('/analytics')">
+            <i class="icon-analytics"></i>
+            <span class="nav-label">Analytics</span>
+          </button>
+          
+          <button 
+            *ngFor="let item of navigationItems" 
+            class="mobile-nav-item"
+            [class.active]="isActiveRoute(item.path)"
+            (click)="navigateTo(item.path); toggleMobileMenu()">
+            <i [class]="'icon-' + item.id"></i>
+            <span class="nav-label">{{ item.title }}</span>
+          </button>
+          
+          <button class="mobile-nav-item" (click)="navigateToSettings(); toggleMobileMenu()" [class.active]="isActiveRoute('/settings')">
+            <i class="icon-settings"></i>
+            <span class="nav-label">Settings</span>
+          </button>
+          <button class="mobile-nav-item" (click)="navigateTo('/ai-studio'); toggleMobileMenu()" [class.active]="isActiveRoute('/ai-studio')">
+            <i class="icon-ai"></i>
+            <span class="nav-label">AI Studio</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

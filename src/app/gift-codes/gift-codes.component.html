@@ -1,0 +1,384 @@
+<!-- PROFESSIONAL GIFT CODE MANAGEMENT -->
+<div class="professional-gift-codes">
+  <!-- Professional Header -->
+  <header class="giftcodes-header">
+    <div class="header-content">
+      <div class="title-section">
+        <h1 class="page-title">
+          <i class="icon-gift"></i>
+          Gift Code Management
+          <span class="pro-badge">Viral Growth</span>
+        </h1>
+        <p class="page-subtitle">Create and manage gift codes for user acquisition</p>
+      </div>
+
+      <!-- Growth Stats -->
+      <div class="header-stats">
+        <div class="stat-card">
+          <div class="stat-icon-container">
+            <i class="icon-codes"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-number">{{ getTotalCodes() }}</div>
+            <div class="stat-label">Total Codes</div>
+            <div class="stat-trend positive">+45 this week</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon-container">
+            <i class="icon-redeemed"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-number">{{ getRedeemedCodes() }}</div>
+            <div class="stat-label">Redeemed</div>
+            <div class="stat-trend">{{ getConversionRate() }}% rate</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon-container">
+            <i class="icon-revenue"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-number">${{ getGeneratedRevenue() | number }}</div>
+            <div class="stat-label">Revenue</div>
+            <div class="stat-trend positive">From gifts</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon-container">
+            <i class="icon-conversion"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-number">{{ getConversionRate() }}%</div>
+            <div class="stat-label">Conversion</div>
+            <div class="stat-trend">To paid</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Quick Actions Bar -->
+  <div class="quick-actions">
+    <div class="actions-bar">
+      <button class="quick-action-btn create-btn" (click)="openCreateModal()">
+        <i class="icon-create"></i>
+        Create Codes
+      </button>
+      <button class="quick-action-btn bulk-btn" (click)="bulkGenerateForCampaign()">
+        <i class="icon-campaign"></i>
+        Bulk Campaign
+      </button>
+      <button class="quick-action-btn export-btn" (click)="exportGiftCodeReport()">
+        <i class="icon-export"></i>
+        Export Report
+      </button>
+      <button class="quick-action-btn metrics-btn" (click)="showViralGrowthMetrics()">
+        <i class="icon-metrics"></i>
+        Growth Metrics
+      </button>
+    </div>
+  </div>
+
+  <!-- Gift Codes Section -->
+  <section class="codes-section">
+    <div class="section-header">
+      <h2>Active Gift Codes</h2>
+      <div class="table-controls">
+        <div class="search-container">
+          <div class="search-box">
+            <i class="icon-search"></i>
+            <input type="text" 
+                   [(ngModel)]="codeSearch" 
+                   (input)="applyFilters()"
+                   placeholder="Search codes..." 
+                   class="search-input">
+          </div>
+        </div>
+        <div class="filter-controls">
+          <div class="filter-group">
+            <label class="filter-label">Status</label>
+            <select [(ngModel)]="statusFilter" (change)="applyFilters()" class="filter-select">
+              <option value="all">All Status</option>
+              <option value="active">Active</option>
+              <option value="redeemed">Redeemed</option>
+              <option value="expired">Expired</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-wrapper">
+      <table class="gift-codes-table">
+        <thead>
+          <tr>
+            <th>Code</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th>Value</th>
+            <th>Uses</th>
+            <th>Created</th>
+            <th>Expires</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let code of filteredCodes" class="code-row">
+            <td class="code-cell">
+              <div class="code-value">{{ code.code }}</div>
+            </td>
+            <td class="type-cell">
+              <span class="type-badge" [class]="getTypeClass(code.type)">
+                {{ getTypeDisplayName(code.type) }}
+              </span>
+            </td>
+            <td class="status-cell">
+              <span class="status-badge" [class]="getStatusClass(code.status)">
+                {{ getStatusDisplayName(code.status) }}
+              </span>
+            </td>
+            <td class="value-cell">
+              <div class="value-amount">${{ code.value }}</div>
+            </td>
+            <td class="uses-cell">
+              <div class="uses-progress">
+                <div class="progress-bar">
+                  <div class="progress-fill" [style.width]="(code.currentUses / code.maxUses) * 100 + '%'"></div>
+                </div>
+                <div class="uses-text">{{ code.currentUses }}/{{ code.maxUses }}</div>
+              </div>
+            </td>
+            <td class="date-cell">
+              <div class="date-value">{{ code.createdDate }}</div>
+            </td>
+            <td class="date-cell">
+              <div class="date-value">{{ code.expiresDate }}</div>
+            </td>
+            <td class="actions-cell">
+              <div class="action-buttons">
+                <button class="btn-action btn-copy" (click)="copyCode(code)" title="Copy Code">
+                  <i class="icon-copy"></i>
+                </button>
+                <button class="btn-action btn-share" (click)="shareCode(code)" title="Share Code">
+                  <i class="icon-share"></i>
+                </button>
+                <button class="btn-action btn-analytics" (click)="showCodeAnalytics(code)" title="Analytics">
+                  <i class="icon-analytics"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="filteredCodes.length === 0 && !isLoading" class="empty-state">
+      <div class="empty-icon">
+        <i class="icon-gift"></i>
+      </div>
+      <div class="empty-content">
+        <h3>No Gift Codes Found</h3>
+        <p>Create your first gift code to start acquiring users</p>
+        <button class="btn-primary" (click)="openCreateModal()">
+          Create First Code
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Loading State -->
+  <ng-template #loadingTemplate>
+    <div class="loading-container">
+      <div class="loading-spinner"></div>
+      <div class="loading-content">
+        <h3>Loading Gift Codes</h3>
+        <p>Please wait while we load the gift code data...</p>
+      </div>
+    </div>
+  </ng-template>
+
+  <!-- Create Gift Code Modal -->
+  <div *ngIf="showCreateModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Create Gift Codes</h3>
+        <button class="modal-close" (click)="closeCreateModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Gift Type</label>
+          <select [(ngModel)]="newGift.type" class="form-select">
+            <option value="premium-trial">Premium Trial (7 days)</option>
+            <option value="premium-month">Premium Month</option>
+            <option value="enterprise-trial">Enterprise Trial</option>
+            <option value="sound-pack">Sound Pack</option>
+            <option value="discount">Discount Code</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Quantity</label>
+          <input type="number" [(ngModel)]="newGift.quantity" min="1" max="1000" 
+                 class="form-input" placeholder="How many codes?">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Expiration</label>
+          <select [(ngModel)]="newGift.expiration" class="form-select">
+            <option value="7">7 days</option>
+            <option value="30">30 days</option>
+            <option value="90">90 days</option>
+            <option value="365">1 year</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Custom Prefix</label>
+          <input type="text" [(ngModel)]="newGift.prefix" 
+                 class="form-input" placeholder="SLEEP2024" maxlength="10">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" (click)="closeCreateModal()">
+          Cancel
+        </button>
+        <button class="btn-primary" (click)="generateGiftCodes()">
+          Generate Codes
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bulk Campaign Modal -->
+  <div *ngIf="showBulkModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Bulk Campaign Generation</h3>
+        <button class="modal-close" (click)="closeBulkModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Campaign Name</label>
+          <input type="text" [(ngModel)]="bulkGift.campaignName" 
+                 class="form-input" placeholder="Holiday Campaign 2024">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Number of Codes</label>
+          <input type="number" [(ngModel)]="bulkGift.codes" min="10" max="10000" 
+                 class="form-input" value="100">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Gift Type</label>
+          <select [(ngModel)]="bulkGift.type" class="form-select">
+            <option value="premium-trial">Premium Trial (7 days)</option>
+            <option value="premium-month">Premium Month</option>
+            <option value="discount">Discount Code</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Expiration</label>
+          <select [(ngModel)]="bulkGift.expiration" class="form-select">
+            <option value="30">30 days</option>
+            <option value="90">90 days</option>
+            <option value="365">1 year</option>
+          </select>
+        </div>
+
+        <div class="campaign-preview">
+          <h4>Campaign Preview</h4>
+          <div class="preview-item">
+            <span class="preview-label">Estimated Conversions:</span>
+            <span class="preview-value">45-60 users</span>
+          </div>
+          <div class="preview-item">
+            <span class="preview-label">Projected Revenue:</span>
+            <span class="preview-value">$450-600</span>
+          </div>
+          <div class="preview-item">
+            <span class="preview-label">Acquisition Cost:</span>
+            <span class="preview-value positive">$0</span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" (click)="closeBulkModal()">
+          Cancel
+        </button>
+        <button class="btn-primary" (click)="generateBulkCampaign()">
+          Generate Campaign
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Export Modal -->
+  <div *ngIf="showExportModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Export Gift Code Report</h3>
+        <button class="modal-close" (click)="closeExportModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="export-options">
+          <div class="option-group">
+            <h4>Report Format</h4>
+            <div class="radio-options">
+              <label class="radio-label">
+                <input type="radio" name="format" value="pdf" checked>
+                <span class="radio-checkmark"></span>
+                PDF Report
+              </label>
+              <label class="radio-label">
+                <input type="radio" name="format" value="excel">
+                <span class="radio-checkmark"></span>
+                Excel Spreadsheet
+              </label>
+              <label class="radio-label">
+                <input type="radio" name="format" value="csv">
+                <span class="radio-checkmark"></span>
+                CSV Data
+              </label>
+            </div>
+          </div>
+
+          <div class="option-group">
+            <h4>Include Data</h4>
+            <div class="checkbox-options">
+              <label class="checkbox-label">
+                <input type="checkbox" checked>
+                <span class="checkmark"></span>
+                Code Performance Metrics
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" checked>
+                <span class="checkmark"></span>
+                Revenue Attribution
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox">
+                <span class="checkmark"></span>
+                User Conversion Data
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" (click)="closeExportModal()">
+          Cancel
+        </button>
+        <button class="btn-primary" (click)="confirmExport()">
+          Generate Report
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

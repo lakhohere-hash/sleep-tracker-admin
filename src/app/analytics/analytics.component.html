@@ -1,0 +1,475 @@
+<!-- PROFESSIONAL ANALYTICS DASHBOARD -->
+<div class="professional-analytics">
+  <!-- Professional Header -->
+  <header class="analytics-header">
+    <div class="header-content">
+      <div class="title-section">
+        <h1 class="page-title">
+          <i class="icon-analytics"></i>
+          Analytics Dashboard
+          <span class="pro-badge">Business Intelligence</span>
+        </h1>
+        <p class="page-subtitle">Real-time insights and performance metrics</p>
+      </div>
+      
+      <!-- Time Range Selector -->
+      <div class="time-selector">
+        <div class="filter-group">
+          <label class="filter-label">Time Range</label>
+          <select [(ngModel)]="timeRange" (change)="changeTimeRange(timeRange)" class="filter-select">
+            <option value="7d">Last 7 Days</option>
+            <option value="30d">Last 30 Days</option>
+            <option value="90d">Last 90 Days</option>
+            <option value="1y">Last Year</option>
+            <option value="all">All Time</option>
+          </select>
+        </div>
+        <span class="current-range">{{ getTimeRangeDisplay() }}</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Real-time Stats Bar -->
+  <section class="realtime-stats" *ngIf="!isLoading">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon-container">
+          <i class="icon-users"></i>
+        </div>
+        <div class="stat-content">
+          <div class="stat-number">{{ realTimeStats.activeUsers }}</div>
+          <div class="stat-label">Active Now</div>
+          <div class="stat-badge live">Live</div>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon-container">
+          <i class="icon-sleep"></i>
+        </div>
+        <div class="stat-content">
+          <div class="stat-number">{{ realTimeStats.currentSessions }}</div>
+          <div class="stat-label">Sleep Sessions</div>
+          <div class="stat-badge live">Live</div>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon-container">
+          <i class="icon-revenue"></i>
+        </div>
+        <div class="stat-content">
+          <div class="stat-number">${{ realTimeStats.revenueToday | number:'1.2-2' }}</div>
+          <div class="stat-label">Revenue Today</div>
+          <div class="stat-badge live">Live</div>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon-container">
+          <i class="icon-downloads"></i>
+        </div>
+        <div class="stat-content">
+          <div class="stat-number">{{ realTimeStats.appDownloads }}</div>
+          <div class="stat-label">Downloads Today</div>
+          <div class="stat-badge live">Live</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Core Metrics Grid -->
+  <section class="metrics-section" *ngIf="!isLoading; else loadingTemplate">
+    <div class="section-header">
+      <h2>Key Performance Indicators</h2>
+      <div class="section-actions">
+        <button class="btn-primary" (click)="exportAnalyticsReport()">
+          <i class="icon-export"></i>
+          Export Report
+        </button>
+        <button class="btn-secondary" (click)="showInvestorDeck()">
+          <i class="icon-investor"></i>
+          Investor Deck
+        </button>
+        <button class="btn-secondary" (click)="simulateDataGrowth()">
+          <i class="icon-growth"></i>
+          Simulate Growth
+        </button>
+        <button class="btn-secondary" (click)="showCompetitiveAnalysis()">
+          <i class="icon-competitor"></i>
+          Competitor Analysis
+        </button>
+      </div>
+    </div>
+    
+    <div class="metrics-grid">
+      <div *ngFor="let metric of metrics" class="metric-card" [class]="'metric-' + metric.color">
+        <div class="metric-header">
+          <div class="metric-icon">{{ metric.icon }}</div>
+          <div class="metric-trend" [style.color]="getTrendColor(metric.trend)">
+            {{ getTrendIcon(metric.trend) }} {{ metric.change }}
+          </div>
+        </div>
+        <div class="metric-content">
+          <h3 class="metric-title">{{ metric.title }}</h3>
+          <p class="metric-value">{{ formatValue(metric) }}</p>
+        </div>
+        <div class="metric-chart">
+          <div class="sparkline">
+            <div *ngFor="let i of [0,1,2,3,4]" 
+                 class="spark-bar"
+                 [style.height]="(getRandomHeight(i)) + '%'">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Charts Section -->
+  <section class="charts-section" *ngIf="!isLoading">
+    <div class="charts-grid">
+      <!-- User Growth Chart -->
+      <div class="chart-card">
+        <div class="chart-header">
+          <h3>User Growth Analytics</h3>
+          <span class="chart-subtitle">New vs Returning Users</span>
+        </div>
+        <div class="chart-container">
+          <div class="mock-chart user-growth-chart">
+            <div class="chart-bars">
+              <div *ngFor="let day of userGrowthData.slice(-14)" class="chart-bar-group">
+                <div class="bar new-users" [style.height]="(day.newUsers / 40 * 100) + '%'"></div>
+                <div class="bar returning-users" [style.height]="(day.returningUsers / 200 * 100) + '%'"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="chart-stats">
+          <div class="chart-stat">
+            <span class="stat-value">{{ getTotalUsers() | number }}</span>
+            <span class="stat-label">Total Users</span>
+          </div>
+          <div class="chart-stat">
+            <span class="stat-value">{{ userGrowthData[userGrowthData.length - 1]?.newUsers || 0 }}</span>
+            <span class="stat-label">New Today</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Revenue Chart -->
+      <div class="chart-card">
+        <div class="chart-header">
+          <h3>Revenue Performance</h3>
+          <span class="chart-subtitle">Monthly Recurring Revenue</span>
+        </div>
+        <div class="chart-container">
+          <div class="mock-chart revenue-chart">
+            <div class="chart-line">
+              <div *ngFor="let month of revenueData; let i = index"
+                   class="line-point"
+                   [style.left]="(i / (revenueData.length - 1)) * 100 + '%'"
+                   [style.bottom]="(month.revenue / 15000 * 100) + '%'">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="chart-stats">
+          <div class="chart-stat">
+            <span class="stat-value">${{ getTotalRevenue() | number }}</span>
+            <span class="stat-label">Total Revenue</span>
+          </div>
+          <div class="chart-stat">
+            <span class="stat-value">{{ revenueData[revenueData.length - 1]?.growth || 0 }}%</span>
+            <span class="stat-label">Growth</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sleep Metrics Chart -->
+      <div class="chart-card">
+        <div class="chart-header">
+          <h3>Sleep Metrics</h3>
+          <span class="chart-subtitle">Duration vs Quality</span>
+        </div>
+        <div class="chart-container">
+          <div class="mock-chart sleep-metrics-chart">
+            <div class="dual-chart">
+              <div class="chart-line duration-line">
+                <div *ngFor="let day of sleepMetricsData; let i = index"
+                     class="line-point"
+                     [style.left]="(i / (sleepMetricsData.length - 1)) * 100 + '%'"
+                     [style.bottom]="((day.avgDuration - 6) * 25) + '%'">
+                </div>
+              </div>
+              <div class="chart-line quality-line">
+                <div *ngFor="let day of sleepMetricsData; let i = index"
+                     class="line-point"
+                     [style.left]="(i / (sleepMetricsData.length - 1)) * 100 + '%'"
+                     [style.bottom]="(day.avgQuality - 70) + '%'">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="chart-stats">
+          <div class="chart-stat">
+            <span class="stat-value">{{ getAverageSleepDuration() | number:'1.1-1' }}h</span>
+            <span class="stat-label">Avg Duration</span>
+          </div>
+          <div class="chart-stat">
+            <span class="stat-value">{{ getAverageSleepQuality() }}%</span>
+            <span class="stat-label">Avg Quality</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Business Intelligence Card -->
+      <div class="chart-card business-intel">
+        <div class="chart-header">
+          <h3>Business Intelligence</h3>
+          <span class="chart-subtitle">Key Financial Metrics</span>
+        </div>
+        <div class="business-metrics">
+          <div class="business-metric">
+            <div class="metric-info">
+              <span class="metric-label">Customer Lifetime Value</span>
+              <span class="metric-value">${{ calculateLifetimeValue() | number:'1.0-0' }}</span>
+            </div>
+            <div class="metric-progress">
+              <div class="progress-bar" [style.width]="'75%'"></div>
+            </div>
+          </div>
+          <div class="business-metric">
+            <div class="metric-info">
+              <span class="metric-label">Acquisition Cost</span>
+              <span class="metric-value">${{ calculateUserAcquisitionCost() | number:'1.2-2' }}</span>
+            </div>
+            <div class="metric-progress">
+              <div class="progress-bar" [style.width]="'45%'"></div>
+            </div>
+          </div>
+          <div class="business-metric">
+            <div class="metric-info">
+              <span class="metric-label">Return on Investment</span>
+              <span class="metric-value">{{ getROI() | number:'1.0-0' }}%</span>
+            </div>
+            <div class="metric-progress">
+              <div class="progress-bar" [style.width]="'92%'"></div>
+            </div>
+          </div>
+          <div class="business-metric">
+            <div class="metric-info">
+              <span class="metric-label">Viral Coefficient</span>
+              <span class="metric-value">1.8</span>
+            </div>
+            <div class="metric-progress">
+              <div class="progress-bar" [style.width]="'90%'"></div>
+            </div>
+          </div>
+        </div>
+        <div class="intel-summary">
+          <span class="summary-text">Business Health: EXCELLENT</span>
+          <span class="summary-subtext">All metrics exceeding industry standards</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Loading Template -->
+  <ng-template #loadingTemplate>
+    <div class="loading-container">
+      <div class="loading-spinner"></div>
+      <div class="loading-content">
+        <h3>Loading Analytics Data</h3>
+        <p>Please wait while we load the business intelligence...</p>
+      </div>
+    </div>
+  </ng-template>
+
+  <!-- Export Modal -->
+  <div *ngIf="showExportModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Export Analytics Report</h3>
+        <button class="modal-close" (click)="closeExportModal()">×</button>
+      </div>
+      
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Export Format</label>
+          <select [(ngModel)]="exportOptions.format" class="form-select">
+            <option value="pdf">PDF Report</option>
+            <option value="excel">Excel Spreadsheet</option>
+            <option value="csv">CSV Data</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Time Range</label>
+          <select [(ngModel)]="exportOptions.timeRange" class="form-select">
+            <option value="7d">Last 7 Days</option>
+            <option value="30d">Last 30 Days</option>
+            <option value="90d">Last 90 Days</option>
+            <option value="1y">Last Year</option>
+            <option value="all">All Time</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="checkbox-label">
+            <input type="checkbox" [(ngModel)]="exportOptions.includeCharts">
+            <span class="checkmark"></span>
+            Include Charts and Visualizations
+          </label>
+        </div>
+
+        <div class="form-group">
+          <label class="checkbox-label">
+            <input type="checkbox" [(ngModel)]="exportOptions.includeData">
+            <span class="checkmark"></span>
+            Include Raw Data Tables
+          </label>
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button class="btn-secondary" (click)="closeExportModal()">
+          Cancel
+        </button>
+        <button class="btn-primary" (click)="confirmExport()">
+          Generate Report
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Investor Deck Modal -->
+  <div *ngIf="showInvestorModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Generate Investor Deck</h3>
+        <button class="modal-close" (click)="closeInvestorModal()">×</button>
+      </div>
+      
+      <div class="modal-body">
+        <div class="investor-info">
+          <div class="info-item">
+            <span class="info-label">Monthly Recurring Revenue:</span>
+            <span class="info-value">${{ getTotalRevenue() | number }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">User Growth Rate:</span>
+            <span class="info-value">+12.5%</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Customer Lifetime Value:</span>
+            <span class="info-value">${{ calculateLifetimeValue() | number:'1.0-0' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Return on Investment:</span>
+            <span class="info-value">{{ getROI() | number:'1.0-0' }}%</span>
+          </div>
+        </div>
+
+        <div class="deck-preview">
+          <h4>Deck Preview</h4>
+          <div class="preview-slides">
+            <div class="preview-slide">📈 Market Opportunity</div>
+            <div class="preview-slide">🚀 Growth Metrics</div>
+            <div class="preview-slide">💰 Revenue Performance</div>
+            <div class="preview-slide">🎯 Competitive Advantage</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button class="btn-secondary" (click)="closeInvestorModal()">
+          Cancel
+        </button>
+        <button class="btn-primary" (click)="generateInvestorDeck()">
+          Generate Deck
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Competitor Analysis Modal -->
+  <div *ngIf="showCompetitorModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Competitive Analysis</h3>
+        <button class="modal-close" (click)="closeCompetitorModal()">×</button>
+      </div>
+      
+      <div class="modal-body">
+        <div class="competitor-comparison">
+          <div class="comparison-header">
+            <span class="company-name">Your App</span>
+            <span class="vs">VS</span>
+            <span class="company-name">Industry Average</span>
+          </div>
+          
+          <div class="comparison-metrics">
+            <div class="metric-row">
+              <span class="metric-name">User Growth</span>
+              <div class="metric-bars">
+                <div class="bar your-app" [style.width]="'85%'">
+                  <span class="bar-value">+12.5%</span>
+                </div>
+                <div class="bar industry" [style.width]="'35%'">
+                  <span class="bar-value">+5.2%</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="metric-row">
+              <span class="metric-name">Revenue Growth</span>
+              <div class="metric-bars">
+                <div class="bar your-app" [style.width]="'90%'">
+                  <span class="bar-value">+28.3%</span>
+                </div>
+                <div class="bar industry" [style.width]="'45%'">
+                  <span class="bar-value">+12.1%</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="metric-row">
+              <span class="metric-name">Sleep Quality</span>
+              <div class="metric-bars">
+                <div class="bar your-app" [style.width]="'86%'">
+                  <span class="bar-value">86%</span>
+                </div>
+                <div class="bar industry" [style.width]="'72%'">
+                  <span class="bar-value">72%</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="metric-row">
+              <span class="metric-name">User Retention</span>
+              <div class="metric-bars">
+                <div class="bar your-app" [style.width]="'78%'">
+                  <span class="bar-value">78%</span>
+                </div>
+                <div class="bar industry" [style.width]="'62%'">
+                  <span class="bar-value">62%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button class="btn-secondary" (click)="closeCompetitorModal()">
+          Cancel
+        </button>
+        <button class="btn-primary" (click)="generateCompetitiveReport()">
+          Generate Report
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
